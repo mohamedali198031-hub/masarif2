@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بلد الأفراح | إدارة المصروفات والمستشار المالي الذكي</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Tajawal & Cairo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Tajawal', 'Cairo', 'sans-serif'],
+                        heading: ['Cairo', 'Tajawal', 'sans-serif'],
+                    },
+                    colors: {
+                        cream: {
+                            50: '#FDFBF7',
+                            100: '#FAF5EC',
+                            200: '#F3E9D8',
+                            300: '#E8D8BE',
+                            400: '#D9C09B',
+                        },
+                        caramel: {
+                            50: '#FDF8F2',
+                            100: '#F9EEDB',
+                            200: '#F1D9B3',
+                            500: '#B87D3B',
+                            600: '#9C6327',
+                            700: '#7E4D1B',
+                            800: '#613B15',
+                            900: '#472B0F',
+                        },
+                        sandDark: {
+                            700: '#5C4D3C',
+                            800: '#423629',
+                            900: '#2B2219',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FAF5EC;
+            color: #2B2219;
+        }
+        /* تنسيقات الطباعة لتصدير تقرير PDF عربي نظيف */
+        @media print {
+            body {
+                background: #ffffff !important;
+                color: #1e293b !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            #print-report-container {
+                display: block !important;
+            }
+            @page {
+                size: A4;
+                margin: 14mm;
+            }
+        }
+        /* شريط تمرير ناعم متناسق مع البيج */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F3E9D8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #C7B293;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9C6327;
+        }
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-toast {
+            animation: slideUpFade 0.35s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-cream-100 text-sandDark-900 font-sans antialiased selection:bg-caramel-600 selection:text-white min-h-screen flex flex-col">
+
+    <!-- حاوية الإشعارات المنبثقة (Toast Notifications + Salaf Quotes) -->
+    <div id="toast-container" class="no-print fixed bottom-5 left-5 z-50 flex flex-col gap-2.5 max-w-md w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- الشريط العلوي الدافئ (Warm Beige & Caramel Header) -->
+    <header class="no-print bg-gradient-to-l from-sandDark-900 via-caramel-900 to-caramel-800 text-cream-50 sticky top-0 z-30 shadow-lg border-b border-caramel-700/60">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+            <!-- الشعار واسم التطبيق -->
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-300 via-caramel-500 to-caramel-700 flex items-center justify-center text-sandDark-900 shadow-lg ring-2 ring-cream-200/40">
+                    <i data-lucide="sparkles" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-heading text-xl sm:text-2xl font-extrabold tracking-tight flex items-center gap-2 text-cream-50">
+                        بلد الأفراح
+                        <span class="text-[11px] font-bold bg-cream-100/15 text-amber-200 px-2.5 py-0.5 rounded-full border border-amber-300/30">إدارة المصروفات الذكية</span>
+                    </h1>
+                    <p class="text-xs text-cream-200/90">تدبيرٌ مبارك، وتحليلٌ ذكي للفواتير وميزانية الأسرة</p>
+                </div>
+            </div>
+
+            <!-- أدوات التحكم السريعة -->
+            <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap">
+                <!-- اختيار العملة -->
+                <select id="currency-select" aria-label="اختر العملة" class="bg-sandDark-900/70 hover:bg-sandDark-900 text-cream-100 text-xs sm:text-sm font-bold rounded-xl px-3 py-2 border border-caramel-600/60 focus:outline-none focus:ring-2 focus:ring-amber-300 transition cursor-pointer">
+                    <option value="ر.س" selected>ر.س (SAR)</option>
+                    <option value="ج.م">ج.م (EGP)</option>
+                    <option value="د.إ">د.إ (AED)</option>
+                    <option value="د.ك">د.ك (KWD)</option>
+                    <option value="ر.ق">ر.ق (QAR)</option>
+                    <option value="$">$ (USD)</option>
+                </select>
+
+                <!-- تصدير تقرير PDF -->
+                <button type="button" id="btn-export-pdf" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-extrabold text-sandDark-900 bg-gradient-to-l from-cream-200 to-amber-300 hover:from-amber-200 hover:to-amber-400 px-3.5 py-2 rounded-xl shadow-sm transition cursor-pointer">
+                    <i data-lucide="file-down" class="w-4 h-4"></i>
+                    <span>تقرير PDF</span>
+                </button>
+
+                <!-- تصدير CSV -->
+                <button type="button" id="btn-export-csv" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-cream-100 bg-caramel-800/80 hover:bg-caramel-700 border border-caramel-600/60 px-3 py-2 rounded-xl transition cursor-pointer">
+                    <i data-lucide="table" class="w-4 h-4 text-amber-300"></i>
+                    <span class="hidden sm:inline">Excel / CSV</span>
+                </button>
+
+                <!-- استيراد CSV -->
+                <button type="button" id="btn-import-csv" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-cream-100 bg-caramel-800/80 hover:bg-caramel-700 border border-caramel-600/60 px-3 py-2 rounded-xl transition cursor-pointer" title="استيراد ملف CSV">
+                    <i data-lucide="upload" class="w-4 h-4 text-amber-300"></i>
+                    <span class="hidden md:inline">استيراد</span>
+                </button>
+                <input type="file" id="csv-import-input" accept=".csv,text/csv" class="hidden">
+
+                <!-- بيانات تجريبية -->
+                <button type="button" id="btn-demo-data" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-amber-200 hover:text-white bg-white/10 hover:bg-white/15 px-3 py-2 rounded-xl transition cursor-pointer">
+                    <i data-lucide="wand-2" class="w-4 h-4 text-amber-300"></i>
+                    <span class="hidden lg:inline">بيانات تجريبية</span>
+                </button>
+
+                <!-- مسح الكل -->
+                <button type="button" id="btn-clear-all" class="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-rose-200 hover:text-white bg-rose-500/20 hover:bg-rose-600/80 border border-rose-400/30 px-2.5 py-2 rounded-xl transition cursor-pointer" title="مسح جميع المصروفات">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="no-print flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+
+        <!-- 1. بطاقة حكمة اليوم من أقوال السلف الصالح -->
+        <section id="salaf-wisdom-card" class="bg-gradient-to-l from-cream-200/90 via-cream-50 to-caramel-50 rounded-3xl p-4 sm:p-5 border border-cream-400/70 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-start gap-3.5">
+                <div class="w-11 h-11 rounded-2xl bg-caramel-600 text-cream-50 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="text-xs font-extrabold text-caramel-700 bg-caramel-100 px-2.5 py-0.5 rounded-full border border-caramel-200">من درر السلف الصالح</span>
+                        <span id="salaf-author-badge" class="text-xs font-bold text-sandDark-700"></span>
+                    </div>
+                    <p id="salaf-quote-text" class="text-sm sm:text-base font-bold text-sandDark-900 leading-relaxed"></p>
+                </div>
+            </div>
+            <button type="button" id="btn-next-salaf-quote" class="self-end sm:self-center shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-cream-200 text-caramel-800 border border-cream-300 text-xs font-extrabold shadow-2xs transition cursor-pointer">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-caramel-600"></i>
+                <span>قول آخر</span>
+            </button>
+        </section>
+
+        <!-- 2. بطاقة إعداد وحفظ مفتاح Gemini API المجاني -->
+        <section id="api-key-banner" class="bg-cream-50 rounded-3xl p-4 sm:p-5 border border-cream-300 shadow-sm flex flex-col xl:flex-row xl:items-center justify-between gap-4 transition-all">
+            <div class="flex items-start sm:items-center gap-3.5">
+                <div id="api-status-icon-box" class="w-12 h-12 rounded-2xl bg-caramel-100 text-caramel-700 flex items-center justify-center shrink-0 border border-caramel-200">
+                    <i data-lucide="key-round" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h2 class="font-heading text-sm sm:text-base font-extrabold text-sandDark-900">مفتاح Gemini API المجاني (لتحليل الفواتير والمستشار الذكي)</h2>
+                        <span id="api-status-badge" class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
+                            بانتظار إدخال المفتاح
+                        </span>
+                    </div>
+                    <p id="api-status-desc" class="text-xs text-sandDark-700 mt-1">
+                        مجاني 100% من Google AI Studio. الصقي المفتاح (<code class="bg-cream-200 px-1.5 py-0.5 rounded text-sandDark-900 font-mono">AQ.</code> أو <code class="bg-cream-200 px-1.5 py-0.5 rounded text-sandDark-900 font-mono">AIza</code>) وسيُحفظ تلقائياً في متصفحك.
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full xl:w-auto">
+                <div class="relative flex-grow sm:w-72">
+                    <input type="password" id="api-key-input" placeholder="AQ.Ab8... أو AIzaSy..." dir="ltr" autocomplete="off" spellcheck="false" class="w-full bg-white border border-cream-300 rounded-xl pl-9 pr-3 py-2.5 text-xs sm:text-sm font-mono text-sandDark-900 focus:outline-none focus:ring-2 focus:ring-caramel-500 transition">
+                    <button type="button" id="btn-toggle-key-visibility" class="absolute left-2.5 top-1/2 -translate-y-1/2 text-sandDark-700/60 hover:text-sandDark-900 p-1 cursor-pointer" title="إظهار / إخفاء المفتاح">
+                        <i data-lucide="eye" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <button type="button" id="btn-save-api-key" class="px-4 py-2.5 bg-caramel-600 hover:bg-caramel-700 active:scale-95 text-white text-xs sm:text-sm font-bold rounded-xl shadow-sm transition shrink-0 inline-flex items-center gap-1.5 cursor-pointer">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-amber-200"></i>
+                    <span>حفظ المفتاح</span>
+                </button>
+                <button type="button" id="btn-test-api-key" class="px-3.5 py-2.5 bg-cream-200 hover:bg-cream-300 text-sandDark-900 border border-cream-400/60 active:scale-95 text-xs sm:text-sm font-bold rounded-xl transition shrink-0 inline-flex items-center gap-1.5 cursor-pointer" title="التحقق من الاتصال بـ Gemini">
+                    <i data-lucide="wifi" class="w-4 h-4 text-caramel-700"></i>
+                    <span>اختبار المفتاح</span>
+                </button>
+                <button type="button" id="btn-clear-api-key" class="hidden px-3 py-2.5 bg-cream-200 hover:bg-rose-100 text-sandDark-700 hover:text-rose-700 text-xs sm:text-sm font-bold rounded-xl transition shrink-0 cursor-pointer" title="مسح المفتاح المحفوظ">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- 3. بطاقات الإحصائيات السريعة (KPI Cards) -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            <!-- إجمالي المصروفات -->
+            <div class="bg-cream-50 rounded-3xl p-5 border border-cream-300 shadow-sm hover:shadow-md transition relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-1.5 h-full bg-gradient-to-b from-caramel-500 to-caramel-700"></div>
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs sm:text-sm font-bold text-sandDark-700">إجمالي المصروفات</span>
+                    <div class="w-10 h-10 rounded-2xl bg-caramel-100 text-caramel-700 flex items-center justify-center">
+                        <i data-lucide="wallet" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <div class="flex items-baseline gap-1.5">
+                    <h2 id="kpi-total-amount" class="font-heading text-2xl sm:text-3xl font-extrabold text-sandDark-900">0.00</h2>
+                    <span class="currency-label text-sm font-bold text-caramel-700">ر.س</span>
+                </div>
+                <p class="text-xs text-sandDark-700/70 mt-1">مجموع كافة الأصناف المسجلة</p>
+            </div>
+
+            <!-- عدد الفواتير والأصناف -->
+            <div class="bg-cream-50 rounded-3xl p-5 border border-cream-300 shadow-sm hover:shadow-md transition relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-1.5 h-full bg-gradient-to-b from-amber-500 to-caramel-600"></div>
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs sm:text-sm font-bold text-sandDark-700">الفواتير والأصناف</span>
+                    <div class="w-10 h-10 rounded-2xl bg-amber-100/80 text-amber-800 flex items-center justify-center">
+                        <i data-lucide="receipt" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <div class="flex items-baseline gap-1.5">
+                    <h2 id="kpi-receipts-count" class="font-heading text-2xl sm:text-3xl font-extrabold text-sandDark-900">0</h2>
+                    <span class="text-sm font-bold text-amber-800">عملية</span>
+                </div>
+                <p class="text-xs text-sandDark-700/70 mt-1">تضم <span id="kpi-items-count" class="font-bold text-sandDark-900">0</span> صنف مفصّل</p>
+            </div>
+
+            <!-- أعلى فئة إنفاقاً -->
+            <div class="bg-cream-50 rounded-3xl p-5 border border-cream-300 shadow-sm hover:shadow-md transition relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-1.5 h-full bg-gradient-to-b from-emerald-600 to-teal-700"></div>
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs sm:text-sm font-bold text-sandDark-700">أعلى فئة إنفاقاً</span>
+                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                        <i data-lucide="trending-up" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <h2 id="kpi-top-category" class="font-heading text-lg sm:text-xl font-extrabold text-sandDark-900 truncate">-</h2>
+                <p class="text-xs text-sandDark-700/70 mt-1.5">بقيمة <span id="kpi-top-category-amount" class="font-bold text-sandDark-900">0.00</span> <span class="currency-label">ر.س</span></p>
+            </div>
+
+            <!-- أعلى متجر إنفاقاً -->
+            <div class="bg-cream-50 rounded-3xl p-5 border border-cream-300 shadow-sm hover:shadow-md transition relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-1.5 h-full bg-gradient-to-b from-sandDark-700 to-sandDark-900"></div>
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs sm:text-sm font-bold text-sandDark-700">أكثر متجر إنفاقاً</span>
+                    <div class="w-10 h-10 rounded-2xl bg-cream-200 text-sandDark-800 flex items-center justify-center">
+                        <i data-lucide="store" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <h2 id="kpi-top-store" class="font-heading text-lg sm:text-xl font-extrabold text-sandDark-900 truncate">-</h2>
+                <p class="text-xs text-sandDark-700/70 mt-1.5">بإجمالي <span id="kpi-top-store-amount" class="font-bold text-sandDark-900">0.00</span> <span class="currency-label">ر.س</span></p>
+            </div>
+        </section>
+
+        <!-- 4. مساحة الإدخال (رفع فاتورة AI + إضافة يدوية) والمستشار المالي الذكي -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <!-- العمود الأيمن (7 أعمدة): إدخال الفواتير بالذكاء الاصطناعي أو الإضافة اليدوية -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="bg-cream-50 rounded-3xl p-6 border border-cream-300 shadow-sm">
+                    <!-- أزرار التبديل بين وضع الذكاء الاصطناعي ووضع الإضافة اليدوية -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-cream-200">
+                        <div class="inline-flex p-1 bg-cream-200/80 rounded-2xl border border-cream-300/70">
+                            <button type="button" id="tab-btn-ai" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-caramel-700 text-white shadow-sm transition inline-flex items-center gap-1.5 cursor-pointer">
+                                <i data-lucide="scan-line" class="w-4 h-4 text-amber-200"></i>
+                                <span>رفع فاتورة (ذكاء اصطناعي)</span>
+                            </button>
+                            <button type="button" id="tab-btn-manual" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-sandDark-700 hover:text-sandDark-900 transition inline-flex items-center gap-1.5 cursor-pointer">
+                                <i data-lucide="pen-square" class="w-4 h-4 text-caramel-700"></i>
+                                <span>إضافة مصروف يدوياً</span>
+                            </button>
+                        </div>
+                        <span class="text-[11px] font-bold text-caramel-800 bg-caramel-100 px-2.5 py-1 rounded-full border border-caramel-200">
+                            تقسيم تلقائي إلى 8 فئات
+                        </span>
+                    </div>
+
+                    <!-- التبويب الأول: رفع وتحليل فاتورة بالذكاء الاصطناعي -->
+                    <div id="panel-ai-upload">
+                        <div id="drop-zone" class="relative border-2 border-dashed border-caramel-500/40 hover:border-caramel-600 bg-cream-100/60 hover:bg-cream-200/40 rounded-2xl p-6 sm:p-8 text-center transition-all cursor-pointer group">
+                            <input type="file" id="receipt-file-input" accept="image/jpeg,image/png,image/webp,application/pdf" class="hidden">
+
+                            <div id="upload-prompt" class="space-y-3">
+                                <div class="w-14 h-14 mx-auto rounded-2xl bg-white shadow-sm border border-cream-300 flex items-center justify-center text-caramel-700 group-hover:scale-105 transition-transform">
+                                    <i data-lucide="upload-cloud" class="w-7 h-7"></i>
+                                </div>
+                                <div>
+                                    <p class="font-heading text-sm sm:text-base font-extrabold text-sandDark-900">اسحبي صورة الفاتورة أو ملف PDF هنا، أو انقري للاختيار</p>
+                                    <p class="text-xs text-sandDark-700/80 mt-1">يدعم الفواتير العربية والإنجليزية (JPG, PNG, WEBP, PDF) والتصوير المباشر بالكاميرا</p>
+                                </div>
+                                <div class="pt-2 flex flex-wrap justify-center gap-2.5">
+                                    <button type="button" id="btn-select-file" class="px-4 py-2.5 bg-caramel-700 hover:bg-caramel-800 text-white text-xs sm:text-sm font-bold rounded-xl shadow-sm transition cursor-pointer inline-flex items-center gap-1.5">
+                                        <i data-lucide="file-image" class="w-4 h-4 text-amber-200"></i>
+                                        <span>اختيار صورة أو PDF</span>
+                                    </button>
+                                    <button type="button" id="btn-camera-capture" class="px-4 py-2.5 bg-white hover:bg-cream-200 text-sandDark-900 border border-cream-300 text-xs sm:text-sm font-bold rounded-xl shadow-sm transition inline-flex items-center gap-1.5 cursor-pointer">
+                                        <i data-lucide="camera" class="w-4 h-4 text-caramel-700"></i>
+                                        <span>تصوير بالكاميرا</span>
+                                    </button>
+                                    <input type="file" id="camera-input" accept="image/*" capture="environment" class="hidden">
+                                </div>
+                            </div>
+
+                            <!-- معاينة الملف المرفوع -->
+                            <div id="file-preview-container" class="hidden space-y-4">
+                                <div class="relative max-h-64 overflow-hidden rounded-2xl border border-cream-300 bg-white flex items-center justify-center p-2">
+                                    <img id="image-preview" src="" alt="معاينة الفاتورة" class="hidden max-h-60 w-auto object-contain rounded-xl shadow-sm">
+                                    <div id="pdf-preview" class="hidden py-8 px-4 flex flex-col items-center gap-2 text-sandDark-800">
+                                        <div class="w-12 h-12 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center">
+                                            <i data-lucide="file-type-2" class="w-7 h-7"></i>
+                                        </div>
+                                        <span id="pdf-filename" class="text-sm font-bold truncate max-w-xs">invoice.pdf</span>
+                                        <span class="text-xs text-sandDark-700">ملف PDF جاهز للتحليل</span>
+                                    </div>
+                                    <button type="button" id="btn-remove-file" class="absolute top-3 left-3 w-8 h-8 rounded-full bg-sandDark-900/80 hover:bg-rose-600 text-white flex items-center justify-center transition shadow cursor-pointer" title="إزالة الملف">
+                                        <i data-lucide="x" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+
+                                <div class="flex flex-wrap items-center justify-center gap-3">
+                                    <button type="button" id="btn-analyze-receipt" class="w-full sm:w-auto px-6 py-3 bg-gradient-to-l from-caramel-700 to-caramel-600 hover:from-caramel-800 hover:to-caramel-700 text-white font-bold text-sm rounded-xl shadow-md flex items-center justify-center gap-2 transition cursor-pointer">
+                                        <i data-lucide="wand-2" class="w-5 h-5 text-amber-200"></i>
+                                        <span>استخراج وتصنيف الأصناف الآن</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- شاشة التحميل أثناء تحليل الذكاء الاصطناعي -->
+                            <div id="ai-loading-overlay" class="hidden absolute inset-0 bg-cream-50/95 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center p-6 z-10">
+                                <div class="w-12 h-12 border-4 border-cream-300 border-t-caramel-700 rounded-full animate-spin mb-3"></div>
+                                <p class="font-heading text-base font-extrabold text-sandDark-900">جاري قراءة الفاتورة وتصنيف الأصناف...</p>
+                                <p class="text-xs text-sandDark-700 mt-1">يقوم الذكاء الاصطناعي بتحليل الأسعار وتوزيع كل صنف على فئته</p>
+                            </div>
+                        </div>
+
+                        <!-- صندوق عرض أخطاء API بوضوح -->
+                        <div id="api-error-box" class="hidden mt-4 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 text-xs space-y-1.5">
+                            <div class="flex items-center justify-between font-bold text-sm">
+                                <span class="flex items-center gap-1.5">
+                                    <i data-lucide="alert-circle" class="w-4 h-4 text-rose-600"></i>
+                                    تنبيه من خادم الذكاء الاصطناعي
+                                </span>
+                                <button type="button" onclick="document.getElementById('api-error-box').classList.add('hidden')" class="text-rose-500 hover:text-rose-700 cursor-pointer">
+                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <p id="api-error-message" class="leading-relaxed font-medium"></p>
+                        </div>
+                    </div>
+
+                    <!-- التبويب الثاني: الإضافة اليدوية المتكاملة (صنف واحد أو عدة أصناف) -->
+                    <div id="panel-manual-entry" class="hidden space-y-4">
+                        <div class="bg-cream-200/70 border border-cream-300 rounded-2xl p-3.5 flex items-center justify-between gap-2">
+                            <p class="text-xs font-bold text-sandDark-800 flex items-center gap-2">
+                                <i data-lucide="info" class="w-4 h-4 text-caramel-700 shrink-0"></i>
+                                أضيفي مصروفاتك يدوياً بدون فاتورة (يمكنك إضافة صنف واحد أو عدة أصناف دفعة واحدة).
+                            </p>
+                            <button type="button" id="btn-add-manual-row" class="shrink-0 text-xs font-extrabold text-caramel-800 bg-white hover:bg-cream-100 border border-cream-300 px-3 py-1.5 rounded-xl transition inline-flex items-center gap-1 cursor-pointer">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                                <span>سطر جديد</span>
+                            </button>
+                        </div>
+
+                        <form id="inline-manual-form" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-cream-100/80 p-3.5 rounded-2xl border border-cream-300/80">
+                                <div>
+                                    <label class="block text-xs font-bold text-sandDark-800 mb-1">اسم المتجر / الجهة</label>
+                                    <input type="text" id="manual-batch-store" placeholder="مثال: سوبر ماركت، صيدلية، مطعم..." class="w-full bg-white border border-cream-300 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-sandDark-800 mb-1">تاريخ المصروف</label>
+                                    <input type="date" id="manual-batch-date" required class="w-full bg-white border border-cream-300 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                                </div>
+                            </div>
+
+                            <!-- صفوف الأصناف اليدوية -->
+                            <div id="manual-rows-container" class="space-y-2.5 max-h-72 overflow-y-auto pl-1"></div>
+
+                            <div class="pt-3 border-t border-cream-200 flex flex-wrap items-center justify-between gap-3">
+                                <div class="text-sm">
+                                    <span class="text-sandDark-700 font-semibold">الإجمالي:</span>
+                                    <span id="manual-batch-total" class="font-heading text-xl font-extrabold text-caramel-700 mr-1">0.00</span>
+                                    <span class="currency-label text-xs font-bold text-sandDark-700">ر.س</span>
+                                </div>
+                                <button type="submit" class="px-6 py-2.5 bg-caramel-700 hover:bg-caramel-800 text-white text-xs sm:text-sm font-bold rounded-xl shadow-sm transition inline-flex items-center gap-2 cursor-pointer">
+                                    <i data-lucide="plus-circle" class="w-4 h-4 text-amber-200"></i>
+                                    <span>حفظ المصروفات في السجل</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- بطاقة مراجعة وتعديل الأصناف المستخرجة من الفاتورة -->
+                <div id="staging-card" class="hidden bg-cream-50 rounded-3xl p-6 border-2 border-caramel-500/40 shadow-lg space-y-5">
+                    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-cream-200 pb-4">
+                        <div>
+                            <span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full mb-1 border border-emerald-200">
+                                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600"></i>
+                                تم استخراج الأصناف - يمكنك التعديل قبل الاعتماد
+                            </span>
+                            <h3 class="font-heading text-lg font-extrabold text-sandDark-900">مراجعة أصناف الفاتورة</h3>
+                        </div>
+                        <button type="button" id="btn-add-staging-row" class="text-xs font-bold text-caramel-800 hover:bg-cream-200 px-3 py-1.5 rounded-xl border border-cream-300 transition inline-flex items-center gap-1 cursor-pointer">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                            <span>إضافة صنف ناقص</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-cream-100 p-3.5 rounded-2xl border border-cream-300">
+                        <div>
+                            <label class="block text-xs font-bold text-sandDark-700 mb-1">اسم المتجر / الجهة</label>
+                            <input type="text" id="staging-store" placeholder="مثال: سوبر ماركت البركة" class="w-full bg-white border border-cream-300 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-sandDark-700 mb-1">تاريخ الفاتورة</label>
+                            <input type="date" id="staging-date" class="w-full bg-white border border-cream-300 rounded-xl px-3 py-2 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                        </div>
+                    </div>
+
+                    <div id="staging-items-list" class="space-y-2.5 max-h-80 overflow-y-auto pl-1"></div>
+
+                    <div class="pt-4 border-t border-cream-200 flex flex-wrap items-center justify-between gap-4">
+                        <div class="text-sm">
+                            <span class="text-sandDark-700 font-semibold">إجمالي الفاتورة:</span>
+                            <span id="staging-total" class="font-heading text-xl font-extrabold text-caramel-700 mr-1">0.00</span>
+                            <span class="currency-label text-xs font-bold text-sandDark-700">ر.س</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" id="btn-cancel-staging" class="px-4 py-2.5 text-xs sm:text-sm font-bold text-sandDark-700 hover:bg-cream-200 rounded-xl transition cursor-pointer">
+                                إلغاء
+                            </button>
+                            <button type="button" id="btn-save-staging" class="px-5 py-2.5 bg-caramel-700 hover:bg-caramel-800 text-white text-xs sm:text-sm font-bold rounded-xl shadow-sm transition inline-flex items-center gap-1.5 cursor-pointer">
+                                <i data-lucide="save" class="w-4 h-4 text-amber-200"></i>
+                                <span>اعتماد وحفظ في السجل</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- العمود الأيسر (5 أعمدة): المستشار المالي الذكي (محادثة AI مجانية + وضع محلي احتياطي) -->
+            <div class="lg:col-span-5 bg-cream-50 rounded-3xl border border-cream-300 shadow-sm flex flex-col h-[550px] overflow-hidden">
+                <!-- ترويسة المستشار الذكي -->
+                <div class="bg-gradient-to-l from-sandDark-900 to-caramel-800 text-cream-50 p-4 sm:p-5 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-amber-300/20 border border-amber-300/40 text-amber-200 flex items-center justify-center shrink-0">
+                            <i data-lucide="bot" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-heading text-base font-extrabold flex items-center gap-2">
+                                المستشار المالي الذكي
+                                <span class="text-[10px] font-bold bg-cream-100/15 text-amber-200 px-2 py-0.5 rounded-full border border-amber-300/30">مجاني</span>
+                            </h3>
+                            <p class="text-[11px] text-cream-200">يقرأ سجل مصروفاتك ويجيبك فوراً مع بديل محلي ذكي</p>
+                        </div>
+                    </div>
+                    <button type="button" id="btn-clear-chat" class="text-cream-200 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition cursor-pointer" title="مسح المحادثة">
+                        <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <!-- منطقة رسائل المحادثة -->
+                <div id="ai-chat-messages" class="flex-grow p-4 overflow-y-auto space-y-3 bg-cream-100/60">
+                    <div class="flex items-start gap-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-caramel-700 text-amber-200 flex items-center justify-center shrink-0 mt-0.5">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        </div>
+                        <div class="bg-white border border-cream-300 rounded-2xl rounded-tr-sm p-3.5 text-xs sm:text-sm text-sandDark-800 leading-relaxed shadow-2xs max-w-[88%]">
+                            أهلاً بكِ في <strong>بلد الأفراح</strong>! أنا مستشاركِ المالي الذكي. أستطيع قراءة جميع مصروفاتكِ وفواتيركِ المسجلة ومساعدتكِ في تحليلها وتوفير ميزانيتكِ.
+                            <span class="block mt-1.5 text-[11px] text-caramel-700 font-bold">💡 يعمل مجاناً بمفتاح Gemini API، وحتى بدون مفتاح سأجيبكِ من محللي الذكي المحلي!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- أزرار الأسئلة السريعة -->
+                <div class="px-3.5 py-2 bg-cream-50 border-t border-cream-200 flex items-center gap-1.5 overflow-x-auto">
+                    <button type="button" class="quick-chat-prompt shrink-0 text-[11px] font-bold bg-cream-200/80 hover:bg-cream-300 text-sandDark-900 border border-cream-300 px-2.5 py-1.5 rounded-full transition cursor-pointer" data-prompt="حلل مصروفاتي واقترح خطة توفير">
+                        📊 حلل مصروفاتي واقترح خطة توفير
+                    </button>
+                    <button type="button" class="quick-chat-prompt shrink-0 text-[11px] font-bold bg-amber-100/80 hover:bg-amber-200 text-amber-950 border border-amber-300/70 px-2.5 py-1.5 rounded-full transition cursor-pointer" data-prompt="ما هي أعلى فئة استهلاكاً؟">
+                        🏆 ما هي أعلى فئة استهلاكاً؟
+                    </button>
+                    <button type="button" class="quick-chat-prompt shrink-0 text-[11px] font-bold bg-cream-200/80 hover:bg-cream-300 text-sandDark-900 border border-cream-300 px-2.5 py-1.5 rounded-full transition cursor-pointer" data-prompt="كيف أوازن ميزانيتي؟">
+                        ⚖️ كيف أوازن ميزانيتي؟
+                    </button>
+                </div>
+
+                <!-- نموذج إرسال سؤال للمستشار -->
+                <form id="ai-chat-form" class="p-3 bg-cream-50 border-t border-cream-200 flex items-center gap-2">
+                    <input type="text" id="ai-chat-input" placeholder="اسألي المستشار الذكي عن مصروفاتك..." autocomplete="off" class="flex-grow bg-white border border-cream-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                    <button type="submit" id="btn-send-chat" class="w-10 h-10 rounded-xl bg-caramel-700 hover:bg-caramel-800 text-white flex items-center justify-center shrink-0 shadow-sm transition cursor-pointer" title="إرسال">
+                        <i data-lucide="send" class="w-4 h-4 text-amber-200"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- 5. قسم الرسوم البيانية التفاعلية (Charts: Doughnut + Bar) -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- الرسم البياني الأول: توزيع المصروفات حسب الفئة (Doughnut Chart) -->
+            <div class="lg:col-span-6 bg-cream-50 rounded-3xl p-6 border border-cream-300 shadow-sm flex flex-col justify-between">
+                <div>
+                    <h3 class="font-heading text-lg font-extrabold text-sandDark-900 flex items-center gap-2">
+                        <i data-lucide="pie-chart" class="w-5 h-5 text-caramel-700"></i>
+                        توزيع المصروفات حسب الفئة
+                    </h3>
+                    <p class="text-xs text-sandDark-700/80 mt-0.5 mb-5">نسبة الإنفاق لكل تصنيف من إجمالي مصروفاتك</p>
+                </div>
+
+                <div class="relative w-full h-60 flex items-center justify-center">
+                    <canvas id="category-doughnut-chart"></canvas>
+                    <div id="doughnut-empty-state" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+                        <div class="w-12 h-12 rounded-2xl bg-cream-200 text-sandDark-700/60 flex items-center justify-center mb-2">
+                            <i data-lucide="pie-chart" class="w-6 h-6"></i>
+                        </div>
+                        <p class="text-sm font-bold text-sandDark-700">لا توجد بيانات للرسم البياني بعد</p>
+                    </div>
+                </div>
+
+                <!-- شريط النسب التفصيلي للفئات -->
+                <div id="category-breakdown-list" class="mt-5 pt-4 border-t border-cream-200 space-y-2.5 max-h-48 overflow-y-auto pl-1"></div>
+            </div>
+
+            <!-- الرسم البياني الثاني: أعلى المتاجر / الجهات إنفاقاً (Bar Chart) -->
+            <div class="lg:col-span-6 bg-cream-50 rounded-3xl p-6 border border-cream-300 shadow-sm flex flex-col justify-between">
+                <div>
+                    <h3 class="font-heading text-lg font-extrabold text-sandDark-900 flex items-center gap-2">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5 text-caramel-700"></i>
+                        أكثر المتاجر والجهات إنفاقاً
+                    </h3>
+                    <p class="text-xs text-sandDark-700/80 mt-0.5 mb-5">مقارنة المبالغ المصروفة لدى كل متجر أو جهة</p>
+                </div>
+
+                <div class="relative w-full h-80 flex items-center justify-center">
+                    <canvas id="stores-bar-chart"></canvas>
+                    <div id="bar-empty-state" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+                        <div class="w-12 h-12 rounded-2xl bg-cream-200 text-sandDark-700/60 flex items-center justify-center mb-2">
+                            <i data-lucide="bar-chart-2" class="w-6 h-6"></i>
+                        </div>
+                        <p class="text-sm font-bold text-sandDark-700">أضيفي فواتير لعرض مقارنة المتاجر</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. السجل التفصيلي للمصروفات والأصناف -->
+        <section class="bg-cream-50 rounded-3xl border border-cream-300 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-cream-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h3 class="font-heading text-lg font-extrabold text-sandDark-900 flex items-center gap-2">
+                        <i data-lucide="list-checks" class="w-5 h-5 text-caramel-700"></i>
+                        سجل المصروفات والأصناف التفصيلي
+                    </h3>
+                    <p class="text-xs text-sandDark-700/80 mt-0.5">ابحثي، صفّي حسب الفئة، أو عدّلي تصنيف أي صنف مباشرة</p>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- البحث -->
+                    <div class="relative flex-grow sm:flex-grow-0">
+                        <i data-lucide="search" class="w-4 h-4 text-sandDark-700/60 absolute right-3 top-1/2 -translate-y-1/2"></i>
+                        <input type="text" id="filter-search" placeholder="ابحثي عن صنف أو متجر..." class="w-full sm:w-56 bg-white border border-cream-300 rounded-xl pr-9 pl-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                    </div>
+
+                    <!-- الفلترة حسب الفئة -->
+                    <select id="filter-category" class="bg-white border border-cream-300 rounded-xl px-3 py-2 text-sm font-bold text-sandDark-800 focus:outline-none focus:ring-2 focus:ring-caramel-500 cursor-pointer">
+                        <option value="ALL">جميع الفئات</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- جدول المصروفات -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                        <tr class="bg-cream-200/70 text-sandDark-800 text-xs font-extrabold border-b border-cream-300">
+                            <th class="py-3.5 px-4">الصنف / البيان</th>
+                            <th class="py-3.5 px-4">الفئة</th>
+                            <th class="py-3.5 px-4">المتجر / الجهة</th>
+                            <th class="py-3.5 px-4">التاريخ</th>
+                            <th class="py-3.5 px-4 text-center">الكمية</th>
+                            <th class="py-3.5 px-4">الإجمالي</th>
+                            <th class="py-3.5 px-4 text-center">إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenses-table-body" class="divide-y divide-cream-200 text-sm"></tbody>
+                </table>
+            </div>
+
+            <!-- حالة الجدول الفارغ -->
+            <div id="table-empty-state" class="hidden py-12 px-4 text-center">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-cream-200 text-caramel-700 flex items-center justify-center mb-3">
+                    <i data-lucide="receipt" class="w-8 h-8"></i>
+                </div>
+                <h4 class="font-heading text-base font-extrabold text-sandDark-900">لا توجد مصروفات مسجلة بعد</h4>
+                <p class="text-xs text-sandDark-700 mt-1 max-w-md mx-auto">ارفعي صورة فاتورة في الأعلى، أو انتقلي لتبويب "إضافة مصروف يدوياً"، أو اضغطي على "بيانات تجريبية".</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- تذييل الصفحة -->
+    <footer class="no-print bg-cream-50 border-t border-cream-300 py-5 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-sandDark-700">
+            <p class="font-extrabold text-sandDark-900">بلد الأفراح — إدارة المصروفات الشخصية والمستشار المالي الذكي</p>
+            <p>بياناتك ومفتاحك محفوظان محلياً في متصفحك بأمان وخصوصية تامة.</p>
+        </div>
+    </footer>
+
+    <!-- حاوية تقرير PDF الاحترافي (تظهر فقط عند الطباعة / الحفظ كـ PDF) -->
+    <div id="print-report-container" class="hidden p-4 space-y-6" dir="rtl">
+        <div class="flex items-center justify-between border-b-2 border-amber-800 pb-4">
+            <div>
+                <h1 class="text-2xl font-extrabold text-amber-950">تقرير المصروفات التفصيلي — بلد الأفراح</h1>
+                <p id="print-report-date" class="text-xs text-slate-600 mt-1"></p>
+            </div>
+            <div class="text-left">
+                <p class="text-xs text-slate-600">إجمالي المصروفات</p>
+                <p id="print-report-total" class="text-2xl font-extrabold text-amber-800">0.00</p>
+            </div>
+        </div>
+
+        <div id="print-categories-summary" class="grid grid-cols-4 gap-2 text-xs"></div>
+
+        <table class="w-full text-right border-collapse border border-slate-300 text-xs">
+            <thead>
+                <tr class="bg-amber-900 text-white">
+                    <th class="border border-slate-300 p-2">#</th>
+                    <th class="border border-slate-300 p-2">الصنف</th>
+                    <th class="border border-slate-300 p-2">الفئة</th>
+                    <th class="border border-slate-300 p-2">المتجر</th>
+                    <th class="border border-slate-300 p-2">التاريخ</th>
+                    <th class="border border-slate-300 p-2">الكمية</th>
+                    <th class="border border-slate-300 p-2">الإجمالي</th>
+                </tr>
+            </thead>
+            <tbody id="print-report-tbody"></tbody>
+        </table>
+    </div>
+
+    <!-- نافذة تعديل عنصر واحد -->
+    <div id="edit-item-modal" class="no-print hidden fixed inset-0 z-50 bg-sandDark-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-cream-50 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-cream-300 space-y-4">
+            <div class="flex items-center justify-between border-b border-cream-200 pb-3">
+                <h3 class="font-heading text-lg font-extrabold text-sandDark-900">تعديل بيانات الصنف</h3>
+                <button type="button" id="btn-close-edit-modal" class="text-sandDark-700 hover:text-sandDark-900 p-1 rounded-lg cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="edit-item-form" class="space-y-3.5">
+                <input type="hidden" id="edit-item-id">
+                <div>
+                    <label class="block text-xs font-bold text-sandDark-800 mb-1">اسم الصنف *</label>
+                    <input type="text" id="edit-name" required class="w-full bg-white border border-cream-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-sandDark-800 mb-1">الفئة *</label>
+                        <select id="edit-category" class="w-full bg-white border border-cream-300 rounded-xl px-3 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-caramel-500"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-sandDark-800 mb-1">المتجر / الجهة</label>
+                        <input type="text" id="edit-store" class="w-full bg-white border border-cream-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-sandDark-800 mb-1">الكمية *</label>
+                        <input type="number" id="edit-qty" min="0.1" step="any" required class="w-full bg-white border border-cream-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold text-sandDark-800 mb-1">الإجمالي (<span class="currency-label">ر.س</span>) *</label>
+                        <input type="number" id="edit-price" min="0" step="0.01" required class="w-full bg-white border border-cream-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-sandDark-800 mb-1">التاريخ *</label>
+                    <input type="date" id="edit-date" required class="w-full bg-white border border-cream-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                </div>
+                <div class="pt-3 flex items-center justify-end gap-2 border-t border-cream-200">
+                    <button type="button" id="btn-cancel-edit-modal" class="px-4 py-2 text-sm font-bold text-sandDark-700 hover:bg-cream-200 rounded-xl transition cursor-pointer">إلغاء</button>
+                    <button type="submit" class="px-5 py-2 bg-caramel-700 hover:bg-caramel-800 text-white text-sm font-bold rounded-xl shadow-sm transition cursor-pointer">حفظ التعديل</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- نافذة تأكيد مخصصة -->
+    <div id="confirm-modal" class="no-print hidden fixed inset-0 z-50 bg-sandDark-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-cream-50 rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-cream-300 space-y-4 text-center">
+            <div class="w-12 h-12 mx-auto rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center">
+                <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+            </div>
+            <div>
+                <h4 id="confirm-title" class="font-heading text-lg font-extrabold text-sandDark-900">تأكيد الإجراء</h4>
+                <p id="confirm-message" class="text-xs text-sandDark-700 mt-1">هل أنتِ متأكدة من المتابعة؟</p>
+            </div>
+            <div class="flex items-center justify-center gap-3 pt-2">
+                <button type="button" id="btn-confirm-no" class="flex-1 py-2.5 text-sm font-bold text-sandDark-800 bg-cream-200 hover:bg-cream-300 rounded-xl transition cursor-pointer">إلغاء</button>
+                <button type="button" id="btn-confirm-yes" class="flex-1 py-2.5 text-sm font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl transition cursor-pointer">نعم، متابعة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- منطق التطبيق الكامل -->
+    <script>
+        /**
+         * ============================================================================
+         * 1. إعداد مفتاح GEMINI API والثوابت الأساسية
+         * ============================================================================
+         * 💡 يمكنك لصق مفتاح Gemini API المجاني (AQ. أو AIza) بين علامتي التنصيص أدناه
+         *    مرة واحدة وحفظ الملف، وسيعمل التطبيق مباشرة بدون الحاجة لإدخاله كل مرة:
+         */
+        const DEFAULT_GEMINI_API_KEY = ""; // <-- الصقي مفتاح AQ. أو AIza هنا لتثبيته في الكود
+
+        // ترتيب النماذج المجانية المدعومة تلقائياً
+        const GEMINI_FREE_MODELS = [
+            "gemini-2.5-flash-lite",
+            "gemini-3-flash-preview",
+            "gemini-2.5-flash"
+        ];
+        const getGeminiEndpoint = (model) => `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+
+        const STORAGE_KEY = "balad_alafrah_expenses_v1";
+        const CURRENCY_KEY = "balad_alafrah_currency_v1";
+        const API_KEY_STORAGE = "balad_alafrah_gemini_key_v1";
+
+        // درر من أقوال السلف الصالح في القناعة والبركة وحسن التدبير
+        const SALAF_QUOTES = [
+            {
+                author: "عبد الله بن مسعود رضي الله عنه",
+                quote: "«ما من يوم إلا وملَكٌ ينادي: يا ابن آدم، قليلٌ يكفيك خيرٌ من كثيرٍ يُطغيك»."
+            },
+            {
+                author: "الحسن البصري رحمه الله",
+                quote: "«من علامة إعراض الله تعالى عن العبد أن يجعل شغله فيما لا يعنيه، والبركة في القصد والتدبير»."
+            },
+            {
+                author: "الإمام الشافعي رحمه الله",
+                quote: "«إذا أردت صلاح قلبك، ونجاح أمرك، وطيب عيشك؛ فاقنع بما قسم الله لك، وأنفق بالمعروف دون إسراف»."
+            },
+            {
+                author: "ابن القيم رحمه الله",
+                quote: "«المال خادمٌ صالح إن وضعته في موضعه، وسيدٌ فاسد إن ملك قلبك؛ فدبّره بعقلٍ وتوكل»."
+            },
+            {
+                author: "الفضيل بن عياض رحمه الله",
+                quote: "«أصل الزهد الرضا عن الله عز وجل، ومن رضي بالقليل بارك الله له فيه وأغناه»."
+            },
+            {
+                author: "عمر بن عبد العزيز رحمه الله",
+                quote: "«أفضل القصد عند الجِدَة، وأفضل العفو عند المقدرة؛ فالتوسط في النفقة نصف المعيشة»."
+            },
+            {
+                author: "سفيان الثوري رحمه الله",
+                quote: "«ليس الزهد بأكل الخشن ولبس العباء، إنما الزهد قِصَر الأمل، وشكر النعمة، وحفظها من التبذير»."
+            },
+            {
+                author: "وهب بن منبه رحمه الله",
+                quote: "«التدبير نصف المعيشة، والتودد نصف العقل، وحسن السؤال نصف العلم»."
+            }
+        ];
+
+        // الفئات الـ 8 المعتمدة بألوان دافئة متناسقة
+        const CATEGORIES = [
+            { id: "مواد غذائية", label: "مواد غذائية", color: "#9C6327", bg: "bg-amber-50 text-amber-900 border-amber-300" },
+            { id: "لحوم ودواجن", label: "لحوم ودواجن", color: "#B91C1C", bg: "bg-red-50 text-red-800 border-red-200" },
+            { id: "خضار وفواكه", label: "خضار وفواكه", color: "#15803D", bg: "bg-emerald-50 text-emerald-800 border-emerald-200" },
+            { id: "منظفات وعناية", label: "منظفات وعناية", color: "#0369A1", bg: "bg-sky-50 text-sky-800 border-sky-200" },
+            { id: "مشروبات وحلويات", label: "مشروبات وحلويات", color: "#D97706", bg: "bg-orange-50 text-orange-800 border-orange-200" },
+            { id: "مطاعم وكافيهات", label: "مطاعم وكافيهات", color: "#B45309", bg: "bg-yellow-50 text-yellow-900 border-yellow-300" },
+            { id: "فواتير وخدمات", label: "فواتير وخدمات", color: "#6D28D9", bg: "bg-violet-50 text-violet-800 border-violet-200" },
+            { id: "أخرى", label: "أخرى", color: "#5C4D3C", bg: "bg-cream-200 text-sandDark-800 border-cream-300" }
+        ];
+
+        // حالة التطبيق
+        let currentApiKey = "";
+        let expenses = [];
+        let currentCurrency = "ر.س";
+        let selectedFileBase64 = null;
+        let selectedFileMimeType = null;
+        let stagingItems = [];
+        let manualBatchRows = [];
+        let chatHistory = [];
+        let currentQuoteIndex = -1;
+        let doughnutChartInstance = null;
+        let barChartInstance = null;
+
+        // دوال تخزين آمنة
+        function safeStorageGet(key) {
+            try { return window.localStorage.getItem(key); } catch (e) { return null; }
+        }
+        function safeStorageSet(key, val) {
+            try { window.localStorage.setItem(key, val); return true; } catch (e) { return false; }
+        }
+        function safeStorageRemove(key) {
+            try { window.localStorage.removeItem(key); return true; } catch (e) { return false; }
+        }
+
+        function maskApiKey(key) {
+            if (!key) return "";
+            if (key.length <= 10) return key.slice(0, 3) + "****";
+            return `${key.slice(0, 4)}...${key.slice(-4)}`;
+        }
+
+        /**
+         * ============================================================================
+         * 2. نظام أقوال السلف الصالح (إشعار ترحيبي + بطاقة قابلة للتحديث)
+         * ============================================================================
+         */
+        function showRandomSalafQuote(showToastAlert = true) {
+            let nextIndex = Math.floor(Math.random() * SALAF_QUOTES.length);
+            if (SALAF_QUOTES.length > 1 && nextIndex === currentQuoteIndex) {
+                nextIndex = (nextIndex + 1) % SALAF_QUOTES.length;
+            }
+            currentQuoteIndex = nextIndex;
+            const item = SALAF_QUOTES[currentQuoteIndex];
+
+            const authorEl = document.getElementById("salaf-author-badge");
+            const textEl = document.getElementById("salaf-quote-text");
+            if (authorEl) authorEl.textContent = item.author;
+            if (textEl) textEl.textContent = item.quote;
+
+            if (showToastAlert) {
+                showSalafToastNotification(item);
+            }
+        }
+
+        function showSalafToastNotification(item) {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            toast.className = "animate-toast bg-gradient-to-l from-sandDark-900 to-caramel-900 text-cream-50 border border-amber-300/40 p-4 rounded-2xl shadow-2xl pointer-events-auto space-y-1.5";
+            toast.innerHTML = `
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-[11px] font-extrabold text-amber-300 flex items-center gap-1.5">
+                        <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+                        من أقوال السلف الصالح • ${escapeHtml(item.author)}
+                    </span>
+                    <button type="button" onclick="this.closest('div.animate-toast').remove()" class="text-cream-200/70 hover:text-white cursor-pointer">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+                <p class="text-xs sm:text-sm font-medium leading-relaxed text-cream-100">${escapeHtml(item.quote)}</p>
+            `;
+            container.appendChild(toast);
+            if (window.lucide) lucide.createIcons();
+
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                toast.style.transition = "opacity 0.4s ease";
+                setTimeout(() => toast.remove(), 400);
+            }, 6500);
+        }
+
+        /**
+         * ============================================================================
+         * 3. إدارة مفتاح GEMINI API
+         * ============================================================================
+         */
+        function initApiKeyState() {
+            const saved = safeStorageGet(API_KEY_STORAGE);
+            if (saved && saved.trim() !== "") {
+                currentApiKey = saved.trim();
+            } else if (DEFAULT_GEMINI_API_KEY && DEFAULT_GEMINI_API_KEY.trim() !== "") {
+                currentApiKey = DEFAULT_GEMINI_API_KEY.trim();
+            } else {
+                currentApiKey = "";
+            }
+        }
+
+        function handleSaveApiKey(silent = false) {
+            const input = document.getElementById("api-key-input");
+            const rawVal = (input ? input.value : "").trim();
+
+            if (!rawVal) {
+                if (!silent) {
+                    showToast("يرجى لصق مفتاح Gemini API (مثل AQ.Ab8... أو AIzaSy...) أولاً.", "error");
+                    if (input) input.focus();
+                }
+                return false;
+            }
+
+            currentApiKey = rawVal;
+            const persisted = safeStorageSet(API_KEY_STORAGE, currentApiKey);
+            updateApiKeyStatusUI();
+
+            if (!silent) {
+                if (persisted) {
+                    showToast(`تم حفظ المفتاح بنجاح (${maskApiKey(currentApiKey)}) وسيبقى محفوظاً دائماً!`, "success");
+                } else {
+                    showToast(`تم تفعيل المفتاح بنجاح (${maskApiKey(currentApiKey)})!`, "success");
+                }
+            }
+            return true;
+        }
+
+        function updateApiKeyStatusUI() {
+            const badge = document.getElementById("api-status-badge");
+            const desc = document.getElementById("api-status-desc");
+            const iconBox = document.getElementById("api-status-icon-box");
+            const input = document.getElementById("api-key-input");
+            const clearBtn = document.getElementById("btn-clear-api-key");
+
+            if (currentApiKey) {
+                const masked = maskApiKey(currentApiKey);
+                badge.textContent = `مفعّل ومحفوظ (${masked}) ✓`;
+                badge.className = "text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200";
+                iconBox.className = "w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-200";
+                desc.innerHTML = `المفتاح محفوظ وجاهز (<code dir="ltr" class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded font-mono font-bold">${escapeHtml(masked)}</code>). يعمل مجاناً مع تحليل الفواتير والمستشار الذكي.`;
+                if (input && input.value.trim() !== currentApiKey) {
+                    input.value = currentApiKey;
+                }
+                if (clearBtn) clearBtn.classList.remove("hidden");
+            } else {
+                badge.textContent = "بانتظار إدخال المفتاح";
+                badge.className = "text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300";
+                iconBox.className = "w-12 h-12 rounded-2xl bg-caramel-100 text-caramel-700 flex items-center justify-center shrink-0 border border-caramel-200";
+                desc.innerHTML = 'مجاني 100% من Google AI Studio. الصقي المفتاح (<code class="bg-cream-200 px-1.5 py-0.5 rounded text-sandDark-900 font-mono">AQ.</code> أو <code class="bg-cream-200 px-1.5 py-0.5 rounded text-sandDark-900 font-mono">AIza</code>) وسيُحفظ تلقائياً في متصفحك.';
+                if (input) input.value = "";
+                if (clearBtn) clearBtn.classList.add("hidden");
+            }
+        }
+
+        /**
+         * ============================================================================
+         * 4. التهيئة الأولية
+         * ============================================================================
+         */
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.lucide) lucide.createIcons();
+            populateCategoryDropdowns();
+            initApiKeyState();
+            loadFromStorage();
+            updateApiKeyStatusUI();
+            initManualBatchForm();
+            setupEventListeners();
+            renderAll();
+            // إظهار قول مأثور من أقوال السلف الصالح عند كل دخول
+            showRandomSalafQuote(true);
+        });
+
+        function loadFromStorage() {
+            const raw = safeStorageGet(STORAGE_KEY);
+            if (raw) {
+                try {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) expenses = parsed;
+                } catch (e) { expenses = []; }
+            }
+            const savedCur = safeStorageGet(CURRENCY_KEY);
+            if (savedCur) {
+                currentCurrency = savedCur;
+                const sel = document.getElementById("currency-select");
+                if (sel) sel.value = currentCurrency;
+            }
+        }
+
+        function saveToStorage() {
+            safeStorageSet(STORAGE_KEY, JSON.stringify(expenses));
+            safeStorageSet(CURRENCY_KEY, currentCurrency);
+        }
+
+        function populateCategoryDropdowns() {
+            const filterSel = document.getElementById("filter-category");
+            const editSel = document.getElementById("edit-category");
+            CATEGORIES.forEach(cat => {
+                const o1 = document.createElement("option");
+                o1.value = cat.id;
+                o1.textContent = cat.label;
+                filterSel.appendChild(o1);
+
+                const o2 = document.createElement("option");
+                o2.value = cat.id;
+                o2.textContent = cat.label;
+                editSel.appendChild(o2);
+            });
+        }
+
+        /**
+         * ============================================================================
+         * 5. الاتصال بـ GEMINI API (مع التبديل التلقائي بين النماذج المجانية)
+         * ============================================================================
+         */
+        async function callGeminiAPI(payload, maxRetries = 1) {
+            const inputVal = (document.getElementById("api-key-input")?.value || "").trim();
+            if (inputVal && inputVal !== currentApiKey) {
+                handleSaveApiKey(true);
+            }
+
+            if (!currentApiKey) {
+                throw new Error("يرجى لصق مفتاح Gemini API في الشريط العلوي والضغط على (حفظ المفتاح) أولاً.");
+            }
+
+            let lastError = null;
+
+            for (const modelName of GEMINI_FREE_MODELS) {
+                const endpoint = getGeminiEndpoint(modelName);
+                let delay = 900;
+
+                for (let attempt = 0; attempt <= maxRetries; attempt++) {
+                    try {
+                        const response = await fetch(endpoint, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "x-goog-api-key": currentApiKey
+                            },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            const errData = await response.json().catch(() => ({}));
+                            const rawMsg = errData?.error?.message || `HTTP ${response.status}`;
+
+                            // التبديل التلقائي للنموذج التالي في القائمة عند عدم توفر النموذج
+                            if (response.status === 404 || rawMsg.includes("no longer available") || rawMsg.includes("not found") || rawMsg.includes("not supported")) {
+                                lastError = new Error(`النموذج ${modelName}: ${rawMsg}`);
+                                break;
+                            }
+
+                            if (response.status === 400 || response.status === 401 || response.status === 403) {
+                                throw new Error(`مفتاح API مرفوض أو غير صالح (${rawMsg}). تأكدي من نسخ المفتاح كاملاً من Google AI Studio.`);
+                            }
+                            if (response.status === 429) {
+                                throw new Error(`تم تجاوز الحد المجاني المؤقت للطلبات في الدقيقة (${rawMsg}). انتظري 30 ثانية ثم حاولي مجدداً.`);
+                            }
+                            throw new Error(`خطأ من خادم جوجل (${modelName}): ${rawMsg}`);
+                        }
+
+                        return await response.json();
+                    } catch (err) {
+                        if (err.message && (err.message.includes("مرفوض") || err.message.includes("يرجى لصق") || err.message.includes("الحد المجاني"))) {
+                            throw err;
+                        }
+                        lastError = err;
+                        if (attempt === maxRetries) {
+                            if (err.name === "TypeError") {
+                                const isLocalFile = window.location.protocol === "file:" || window.location.protocol === "content:";
+                                const hint = isLocalFile
+                                    ? "ملاحظة: يبدو أنك تفتحين الملف محلياً من ذاكرة الهاتف (file://) وقد يحظر المتصفح الاتصال الخارجي؛ يُفضّل فتحه عبر رابط ويب أو معاينة المتصفح."
+                                    : "تأكدي من اتصال الإنترنت أو عدم حظر جدار الحماية لخوادم googleapis.com.";
+                                throw new Error(`فشل الاتصال الشبكي بخادم جوجل (${err.message}). ${hint}`);
+                            }
+                            break;
+                        }
+                        await new Promise(res => setTimeout(res, delay));
+                        delay *= 2;
+                    }
+                }
+            }
+
+            throw lastError || new Error("تعذر إتمام الطلب عبر نماذج Gemini المجانية حالياً.");
+        }
+
+        async function testGeminiApiKey() {
+            const btn = document.getElementById("btn-test-api-key");
+            const origHtml = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<span class="w-4 h-4 border-2 border-caramel-700 border-t-transparent rounded-full animate-spin inline-block"></span><span>جاري الاختبار...</span>`;
+            document.getElementById("api-error-box").classList.add("hidden");
+
+            try {
+                await callGeminiAPI({
+                    contents: [{ role: "user", parts: [{ text: "أجب بكلمة واحدة: جاهز" }] }],
+                    generationConfig: { maxOutputTokens: 10 }
+                }, 0);
+                showToast("ممتاز! المفتاح متصل بنجاح بنماذج Gemini المجانية ✓", "success");
+            } catch (error) {
+                showToast("فشل الاتصال بالمفتاح. راجعي التفاصيل بالأسفل.", "error");
+                showApiErrorBox(error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+                if (window.lucide) lucide.createIcons();
+            }
+        }
+
+        async function analyzeReceiptWithGemini() {
+            if (!selectedFileBase64 || !selectedFileMimeType) {
+                showToast("يرجى اختيار صورة فاتورة أو ملف PDF أولاً.", "error");
+                return;
+            }
+
+            const loadingOverlay = document.getElementById("ai-loading-overlay");
+            document.getElementById("api-error-box").classList.add("hidden");
+            loadingOverlay.classList.remove("hidden");
+
+            const categoryListStr = CATEGORIES.map(c => c.id).join("، ");
+            const promptText = `
+أنت محاسب ذكي متخصص في تحليل الفواتير باللغتين العربية والإنجليزية.
+استخرج جميع الأصناف المشتراة من هذه الفاتورة بدقة:
+لكل صنف:
+1. name: اسم الصنف بالعربية الواضحة.
+2. qty: الكمية (رقم، الافتراضي 1).
+3. price: السعر الإجمالي للصنف (رقم عشري).
+4. category: صنّفه بدقة إلى واحدة من هذه الفئات الـ 8 حصراً: [${categoryListStr}].
+
+واستخرج أيضاً:
+- store: اسم المتجر أو الجهة بالعربية.
+- date: تاريخ الفاتورة بصيغة YYYY-MM-DD (أو اتركه فارغاً إن لم يوجد).
+- currency: رمز العملة إن وجد (مثل: ر.س، ج.م، د.إ، $).
+تجاهل سطور المجموع الفرعي والضريبة المنفصلة وركز على الأصناف الفعلية.
+`;
+
+            const payload = {
+                contents: [{
+                    role: "user",
+                    parts: [
+                        { text: promptText },
+                        { inlineData: { mimeType: selectedFileMimeType, data: selectedFileBase64 } }
+                    ]
+                }],
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: {
+                        type: "OBJECT",
+                        properties: {
+                            store: { type: "STRING" },
+                            date: { type: "STRING" },
+                            currency: { type: "STRING" },
+                            items: {
+                                type: "ARRAY",
+                                items: {
+                                    type: "OBJECT",
+                                    properties: {
+                                        name: { type: "STRING" },
+                                        qty: { type: "NUMBER" },
+                                        price: { type: "NUMBER" },
+                                        category: { type: "STRING" }
+                                    },
+                                    required: ["name", "qty", "price", "category"]
+                                }
+                            }
+                        },
+                        required: ["store", "items"]
+                    }
+                }
+            };
+
+            try {
+                const result = await callGeminiAPI(payload, 1);
+                const rawText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!rawText) throw new Error("لم يتمكن النموذج من استخراج بيانات واضحة. جربي صورة أوضح.");
+                const parsed = JSON.parse(rawText);
+                populateStagingArea(parsed);
+                showToast("تم تحليل الفاتورة وتقسيم الأصناف بنجاح!", "success");
+            } catch (error) {
+                showToast("تعذر تحليل الفاتورة.", "error");
+                showApiErrorBox(error.message);
+            } finally {
+                loadingOverlay.classList.add("hidden");
+            }
+        }
+
+        function showApiErrorBox(msg) {
+            const box = document.getElementById("api-error-box");
+            document.getElementById("api-error-message").textContent = msg;
+            box.classList.remove("hidden");
+            if (window.lucide) lucide.createIcons();
+        }
+
+        /**
+         * ============================================================================
+         * 6. المستشار المالي الذكي (محادثة AI + محلل ذكي محلي بدون إنترنت/مفتاح)
+         * ============================================================================
+         */
+        function buildFinancialContextSummary() {
+            if (expenses.length === 0) {
+                return "سجل مصروفات المستخدم فارغ حالياً (0 مصروفات مسجلة).";
+            }
+
+            const total = expenses.reduce((s, e) => s + (Number(e.totalPrice) || 0), 0);
+            const catTotals = {};
+            const storeTotals = {};
+
+            expenses.forEach(e => {
+                const amt = Number(e.totalPrice) || 0;
+                catTotals[e.category] = (catTotals[e.category] || 0) + amt;
+                const st = e.store || "غير محدد";
+                storeTotals[st] = (storeTotals[st] || 0) + amt;
+            });
+
+            const catsText = Object.entries(catTotals)
+                .sort((a, b) => b[1] - a[1])
+                .map(([c, v]) => `- ${c}: ${v.toFixed(2)} ${currentCurrency} (${((v / total) * 100).toFixed(1)}%)`)
+                .join("\n");
+
+            const storesText = Object.entries(storeTotals)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 6)
+                .map(([s, v]) => `- ${s}: ${v.toFixed(2)} ${currentCurrency}`)
+                .join("\n");
+
+            const recentItems = expenses.slice(0, 20)
+                .map(e => `• ${e.name} (${e.category}) - ${e.totalPrice} ${currentCurrency} في ${e.store} بتاريخ ${e.date}`)
+                .join("\n");
+
+            return `
+بيانات مصروفات المستخدم الحالية في تطبيق (بلد الأفراح):
+- العملة: ${currentCurrency}
+- إجمالي المصروفات الكلي: ${total.toFixed(2)} ${currentCurrency}
+- عدد الأصناف المسجلة: ${expenses.length}
+
+توزيع المصروفات حسب الفئات:
+${catsText}
+
+أعلى المتاجر/الجهات إنفاقاً:
+${storesText}
+
+أحدث الأصناف المشتراة:
+${recentItems}
+`;
+        }
+
+        // محلل محلي ذكي يعمل فوراً إذا لم يتم إدخال مفتاح API أو تعذر الاتصال
+        function generateOfflineAdvisorReply(question) {
+            if (expenses.length === 0) {
+                return "سجل مصروفاتكِ فارغ حالياً! ابدئي برفع صورة فاتورة أو إضافة مصروف يدوياً (أو اضغطي على **بيانات تجريبية** في الأعلى) وسأحلل أرقامكِ فوراً.";
+            }
+
+            const total = expenses.reduce((s, e) => s + (Number(e.totalPrice) || 0), 0);
+            const catTotals = {};
+            const storeTotals = {};
+            expenses.forEach(e => {
+                const amt = Number(e.totalPrice) || 0;
+                catTotals[e.category] = (catTotals[e.category] || 0) + amt;
+                const st = e.store || "غير محدد";
+                storeTotals[st] = (storeTotals[st] || 0) + amt;
+            });
+
+            const sortedCats = Object.entries(catTotals).sort((a, b) => b[1] - a[1]);
+            const sortedStores = Object.entries(storeTotals).sort((a, b) => b[1] - a[1]);
+            const topCat = sortedCats[0];
+            const topStore = sortedStores[0];
+            const topCatPct = ((topCat[1] / total) * 100).toFixed(1);
+            const savingTarget = (total * 0.15).toFixed(2);
+
+            const q = question.toLowerCase();
+
+            if (q.includes("فئة") || q.includes("استهلاك") || q.includes("فين")) {
+                const top3 = sortedCats.slice(0, 3)
+                    .map(([c, v], idx) => `${idx + 1}. **${c}**: ${v.toFixed(2)} ${currentCurrency} (${((v / total) * 100).toFixed(1)}%)`)
+                    .join("\n");
+                return `بناءً على تحليلي المحلي لسجلكِ (إجمالي **${total.toFixed(2)} ${currentCurrency}**):\n\nأعلى الفئات استهلاكاً لديكِ هي:\n${top3}\n\nوأكثر متجر أنفقتِ فيه هو **${topStore[0]}** بقيمة **${topStore[1].toFixed(2)} ${currentCurrency}**.`;
+            }
+
+            if (q.includes("توفير") || q.includes("خطة") || q.includes("وازن") || q.includes("ميزاني")) {
+                return `إليكِ خطة توازن وتوفير سريعة مبنية على مصروفاتكِ الحالية (**${total.toFixed(2)} ${currentCurrency}**):\n\n• **التركيز على الفئة الأعلى (${topCat[0]}):** تمثل **${topCatPct}%** من إنفاقكِ؛ تقليصها بنسبة 20% فقط سيوفر لكِ **${(topCat[1] * 0.2).toFixed(2)} ${currentCurrency}**.\n• **هدف التوفير الشهري المقترح (15%):** **${savingTarget} ${currentCurrency}**.\n• **نصيحة عملية:** قارني أسعار الأصناف المتكررة في **${topStore[0]}** واكتبي قائمة المشتريات مسبقاً لتجنب الشراء العشوائي.`;
+            }
+
+            return `ملخصكِ المالي السريع من **بلد الأفراح**:\n• **إجمالي المصروفات:** ${total.toFixed(2)} ${currentCurrency} (${expenses.length} صنف)\n• **أعلى فئة:** ${topCat[0]} (${topCat[1].toFixed(2)} ${currentCurrency} - ${topCatPct}%)\n• **أعلى متجر:** ${topStore[0]} (${topStore[1].toFixed(2)} ${currentCurrency})\n\n*(ملاحظة: أضيفي مفتاح Gemini API في الأعلى للحصول على نقاش مالي أعمق بالذكاء الاصطناعي التوليدي).*`;
+        }
+
+        async function handleSendChatMessage(userText) {
+            const trimmed = userText.trim();
+            if (!trimmed) return;
+
+            appendChatBubble("user", trimmed);
+            document.getElementById("ai-chat-input").value = "";
+
+            // إذا لم يُدخل المستخدم مفتاح API، نستخدم المحلل الذكي المحلي فوراً دون خطأ
+            const inputVal = (document.getElementById("api-key-input")?.value || "").trim();
+            if (inputVal && inputVal !== currentApiKey) {
+                handleSaveApiKey(true);
+            }
+
+            if (!currentApiKey) {
+                const offlineReply = generateOfflineAdvisorReply(trimmed);
+                appendChatBubble("ai", offlineReply);
+                return;
+            }
+
+            const typingId = "typing-" + Date.now();
+            appendTypingIndicator(typingId);
+
+            const sendBtn = document.getElementById("btn-send-chat");
+            sendBtn.disabled = true;
+
+            const systemContext = `
+أنت المستشار المالي الذكي المدمج داخل تطبيق (بلد الأفراح).
+تحدث باللغة العربية بأسلوب ودود وعملي ومختصر ومنظم (استخدم نقاطاً واضحة وأرقاماً دقيقة).
+لديك اطلاع كامل على بيانات مصروفات المستخدم أدناه. استخدمها للإجابة بدقة على أسئلته وتقديم نصائح توفير ذكية ومخصصة لأصنافه الفعلية.
+
+${buildFinancialContextSummary()}
+`;
+
+            chatHistory.push({ role: "user", parts: [{ text: trimmed }] });
+            const recentHistory = chatHistory.slice(-8);
+
+            const payload = {
+                systemInstruction: {
+                    parts: [{ text: systemContext }]
+                },
+                contents: recentHistory,
+                generationConfig: {
+                    temperature: 0.6,
+                    maxOutputTokens: 700
+                }
+            };
+
+            try {
+                const res = await callGeminiAPI(payload, 1);
+                removeTypingIndicator(typingId);
+                const reply = res?.candidates?.[0]?.content?.parts?.[0]?.text || "عذراً، لم أتمكن من صياغة رد حالياً.";
+                chatHistory.push({ role: "model", parts: [{ text: reply }] });
+                appendChatBubble("ai", reply);
+            } catch (err) {
+                removeTypingIndicator(typingId);
+                chatHistory.pop();
+                // عرض التحليل المحلي مع تنبيه مختصر لسبب تعذر الاتصال السحابي
+                const fallbackReply = generateOfflineAdvisorReply(trimmed);
+                appendChatBubble("ai", `${fallbackReply}\n\n⚠️ *(تعذر الاتصال السحابي: ${err.message})*`);
+            } finally {
+                sendBtn.disabled = false;
+            }
+        }
+
+        function appendChatBubble(sender, text) {
+            const container = document.getElementById("ai-chat-messages");
+            const wrapper = document.createElement("div");
+
+            if (sender === "user") {
+                wrapper.className = "flex items-start justify-end gap-2";
+                wrapper.innerHTML = `
+                    <div class="bg-caramel-700 text-white rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed shadow-2xs max-w-[85%]">
+                        ${escapeHtml(text)}
+                    </div>
+                `;
+            } else {
+                const formatted = escapeHtml(text)
+                    .replace(/\*\*(.*?)\*\*/g, '<strong class="text-caramel-800 font-extrabold">$1</strong>')
+                    .replace(/\n/g, '<br>');
+
+                wrapper.className = "flex items-start gap-2.5";
+                wrapper.innerHTML = `
+                    <div class="w-8 h-8 rounded-xl bg-caramel-700 text-amber-200 flex items-center justify-center shrink-0 mt-0.5">
+                        <i data-lucide="bot" class="w-4 h-4"></i>
+                    </div>
+                    <div class="bg-white border border-cream-300 rounded-2xl rounded-tr-sm p-3.5 text-xs sm:text-sm text-sandDark-800 leading-relaxed shadow-2xs max-w-[88%]">
+                        ${formatted}
+                    </div>
+                `;
+            }
+
+            container.appendChild(wrapper);
+            container.scrollTop = container.scrollHeight;
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function appendTypingIndicator(id) {
+            const container = document.getElementById("ai-chat-messages");
+            const div = document.createElement("div");
+            div.id = id;
+            div.className = "flex items-start gap-2.5";
+            div.innerHTML = `
+                <div class="w-8 h-8 rounded-xl bg-caramel-700 text-amber-200 flex items-center justify-center shrink-0">
+                    <i data-lucide="bot" class="w-4 h-4"></i>
+                </div>
+                <div class="bg-white border border-cream-300 rounded-2xl px-4 py-3 text-xs text-sandDark-700 flex items-center gap-1.5">
+                    <span class="w-2 h-2 bg-caramel-600 rounded-full animate-bounce"></span>
+                    <span class="w-2 h-2 bg-caramel-600 rounded-full animate-bounce" style="animation-delay: 0.15s"></span>
+                    <span class="w-2 h-2 bg-caramel-600 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function removeTypingIndicator(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        /**
+         * ============================================================================
+         * 7. الإضافة اليدوية المتكاملة (عدة أصناف دفعة واحدة)
+         * ============================================================================
+         */
+        function initManualBatchForm() {
+            const todayStr = new Date().toISOString().split("T")[0];
+            document.getElementById("manual-batch-date").value = todayStr;
+            manualBatchRows = [
+                { id: Date.now(), name: "", category: "مواد غذائية", quantity: 1, totalPrice: "" }
+            ];
+            renderManualBatchRows();
+        }
+
+        function renderManualBatchRows() {
+            const container = document.getElementById("manual-rows-container");
+            container.innerHTML = "";
+
+            manualBatchRows.forEach((row, idx) => {
+                const catOpts = CATEGORIES.map(c =>
+                    `<option value="${c.id}" ${c.id === row.category ? "selected" : ""}>${c.label}</option>`
+                ).join("");
+
+                const div = document.createElement("div");
+                div.className = "grid grid-cols-12 gap-2 items-center bg-cream-100/80 p-2.5 rounded-2xl border border-cream-300";
+                div.innerHTML = `
+                    <div class="col-span-12 sm:col-span-4">
+                        <input type="text" data-idx="${idx}" data-field="name" value="${escapeHtml(row.name)}" placeholder="اسم الصنف (مثال: خبز، قهوة...)" required class="manual-row-input w-full bg-white border border-cream-300 rounded-xl px-2.5 py-2 text-xs font-bold text-sandDark-900 focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                    </div>
+                    <div class="col-span-6 sm:col-span-3">
+                        <select data-idx="${idx}" data-field="category" class="manual-row-input w-full bg-white border border-cream-300 rounded-xl px-2 py-2 text-xs font-bold text-sandDark-800 focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                            ${catOpts}
+                        </select>
+                    </div>
+                    <div class="col-span-3 sm:col-span-2">
+                        <input type="number" step="any" min="0.1" data-idx="${idx}" data-field="quantity" value="${row.quantity}" placeholder="الكمية" title="الكمية" class="manual-row-input w-full bg-white border border-cream-300 rounded-xl px-2 py-2 text-xs text-center font-bold focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                    </div>
+                    <div class="col-span-3 sm:col-span-2">
+                        <input type="number" step="0.01" min="0" data-idx="${idx}" data-field="totalPrice" value="${row.totalPrice}" placeholder="السعر" required title="السعر الإجمالي" class="manual-row-input w-full bg-white border border-cream-300 rounded-xl px-2 py-2 text-xs text-left font-extrabold text-caramel-700 focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                    </div>
+                    <div class="col-span-12 sm:col-span-1 flex justify-end sm:justify-center">
+                        ${manualBatchRows.length > 1 ? `
+                            <button type="button" onclick="removeManualBatchRow(${idx})" class="text-sandDark-700/60 hover:text-rose-600 p-1 rounded-lg transition cursor-pointer" title="حذف السطر">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        ` : `<span class="text-sandDark-700/50 text-xs font-bold">#1</span>`}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+
+            updateManualBatchTotal();
+            if (window.lucide) lucide.createIcons();
+
+            document.querySelectorAll(".manual-row-input").forEach(el => {
+                el.addEventListener("input", (e) => {
+                    const idx = parseInt(e.target.dataset.idx);
+                    const field = e.target.dataset.field;
+                    manualBatchRows[idx][field] = e.target.value;
+                    if (field === "totalPrice") updateManualBatchTotal();
+                });
+            });
+        }
+
+        function updateManualBatchTotal() {
+            const total = manualBatchRows.reduce((sum, r) => sum + (parseFloat(r.totalPrice) || 0), 0);
+            document.getElementById("manual-batch-total").textContent = total.toFixed(2);
+        }
+
+        window.removeManualBatchRow = function(idx) {
+            manualBatchRows.splice(idx, 1);
+            renderManualBatchRows();
+        };
+
+        function handleManualBatchSubmit(e) {
+            e.preventDefault();
+            const store = document.getElementById("manual-batch-store").value.trim() || "إدخال يدوي";
+            const date = document.getElementById("manual-batch-date").value || new Date().toISOString().split("T")[0];
+            const receiptId = "MAN-" + Date.now();
+
+            const valid = manualBatchRows.filter(r => r.name.trim() !== "");
+            if (valid.length === 0) {
+                showToast("يرجى كتابة اسم صنف واحد على الأقل.", "error");
+                return;
+            }
+
+            valid.forEach((r, idx) => {
+                expenses.unshift({
+                    id: "EXP-" + Date.now() + "-" + idx,
+                    receiptId,
+                    name: r.name.trim(),
+                    category: r.category,
+                    store,
+                    date,
+                    quantity: parseFloat(r.quantity) || 1,
+                    totalPrice: parseFloat(r.totalPrice) || 0
+                });
+            });
+
+            saveToStorage();
+            renderAll();
+            document.getElementById("manual-batch-store").value = "";
+            initManualBatchForm();
+            showToast(`تمت إضافة ${valid.length} مصروفات يدوياً بنجاح!`, "success");
+        }
+
+        /**
+         * ============================================================================
+         * 8. منطقة مراجعة الفاتورة المستخرجة (STAGING AREA)
+         * ============================================================================
+         */
+        function populateStagingArea(data) {
+            const stagingCard = document.getElementById("staging-card");
+            document.getElementById("staging-store").value = data.store || "متجر غير محدد";
+
+            const todayStr = new Date().toISOString().split("T")[0];
+            document.getElementById("staging-date").value = (data.date && /^\d{4}-\d{2}-\d{2}$/.test(data.date)) ? data.date : todayStr;
+
+            if (data.currency) {
+                const sel = document.getElementById("currency-select");
+                const norm = data.currency.trim();
+                for (let opt of sel.options) {
+                    if (opt.value === norm) {
+                        currentCurrency = norm;
+                        sel.value = norm;
+                        updateCurrencyLabels();
+                        break;
+                    }
+                }
+            }
+
+            stagingItems = (data.items || []).map((item, idx) => {
+                const matched = CATEGORIES.find(c => c.id === item.category) ? item.category : "أخرى";
+                return {
+                    tempId: Date.now() + idx,
+                    name: item.name || "صنف غير مسمى",
+                    quantity: Number(item.qty) || 1,
+                    totalPrice: Number(item.price) || 0,
+                    category: matched
+                };
+            });
+
+            if (stagingItems.length === 0) {
+                stagingItems.push({ tempId: Date.now(), name: "", quantity: 1, totalPrice: 0, category: "أخرى" });
+            }
+
+            renderStagingItems();
+            stagingCard.classList.remove("hidden");
+            stagingCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+
+        function renderStagingItems() {
+            const container = document.getElementById("staging-items-list");
+            container.innerHTML = "";
+            let total = 0;
+
+            stagingItems.forEach((item, index) => {
+                total += Number(item.totalPrice) || 0;
+                const catOpts = CATEGORIES.map(cat =>
+                    `<option value="${cat.id}" ${cat.id === item.category ? "selected" : ""}>${cat.label}</option>`
+                ).join("");
+
+                const row = document.createElement("div");
+                row.className = "grid grid-cols-12 gap-2 items-center bg-cream-100/80 p-2.5 rounded-2xl border border-cream-300";
+                row.innerHTML = `
+                    <div class="col-span-12 sm:col-span-4">
+                        <input type="text" data-idx="${index}" data-field="name" value="${escapeHtml(item.name)}" placeholder="اسم الصنف" class="staging-input w-full bg-white border border-cream-300 rounded-xl px-2.5 py-1.5 text-xs font-bold text-sandDark-900 focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                    </div>
+                    <div class="col-span-6 sm:col-span-3">
+                        <select data-idx="${index}" data-field="category" class="staging-input w-full bg-white border border-cream-300 rounded-xl px-2 py-1.5 text-xs font-bold text-sandDark-800 focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                            ${catOpts}
+                        </select>
+                    </div>
+                    <div class="col-span-3 sm:col-span-2">
+                        <input type="number" step="any" min="0.1" data-idx="${index}" data-field="quantity" value="${item.quantity}" title="الكمية" class="staging-input w-full bg-white border border-cream-300 rounded-xl px-2 py-1.5 text-xs text-center font-bold focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                    </div>
+                    <div class="col-span-3 sm:col-span-2">
+                        <input type="number" step="0.01" min="0" data-idx="${index}" data-field="totalPrice" value="${item.totalPrice}" title="السعر" class="staging-input w-full bg-white border border-cream-300 rounded-xl px-2 py-1.5 text-xs text-left font-extrabold text-caramel-700 focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                    </div>
+                    <div class="col-span-12 sm:col-span-1 flex justify-end sm:justify-center">
+                        <button type="button" onclick="removeStagingRow(${index})" class="text-sandDark-700/60 hover:text-rose-600 p-1 rounded-lg transition cursor-pointer" title="حذف الصنف">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+
+            document.getElementById("staging-total").textContent = total.toFixed(2);
+            if (window.lucide) lucide.createIcons();
+
+            document.querySelectorAll(".staging-input").forEach(input => {
+                input.addEventListener("input", (e) => {
+                    const idx = parseInt(e.target.dataset.idx);
+                    const field = e.target.dataset.field;
+                    let val = e.target.value;
+                    if (field === "quantity" || field === "totalPrice") val = parseFloat(val) || 0;
+                    stagingItems[idx][field] = val;
+                    if (field === "totalPrice") {
+                        const newTot = stagingItems.reduce((s, it) => s + (Number(it.totalPrice) || 0), 0);
+                        document.getElementById("staging-total").textContent = newTot.toFixed(2);
+                    }
+                });
+            });
+        }
+
+        window.removeStagingRow = function(idx) {
+            stagingItems.splice(idx, 1);
+            renderStagingItems();
+        };
+
+        function commitStagingToExpenses() {
+            const storeName = document.getElementById("staging-store").value.trim() || "متجر غير محدد";
+            const dateVal = document.getElementById("staging-date").value || new Date().toISOString().split("T")[0];
+            const receiptId = "REC-" + Date.now();
+
+            const validItems = stagingItems.filter(it => it.name.trim() !== "");
+            if (validItems.length === 0) {
+                showToast("يرجى إضافة صنف واحد على الأقل قبل الحفظ.", "error");
+                return;
+            }
+
+            validItems.forEach((item, idx) => {
+                expenses.unshift({
+                    id: "EXP-" + Date.now() + "-" + idx,
+                    receiptId,
+                    name: item.name.trim(),
+                    category: item.category,
+                    store: storeName,
+                    date: dateVal,
+                    quantity: Number(item.quantity) || 1,
+                    totalPrice: Number(item.totalPrice) || 0
+                });
+            });
+
+            saveToStorage();
+            renderAll();
+            resetUploadAndStaging();
+            showToast(`تم اعتماد وحفظ ${validItems.length} أصناف في السجل!`, "success");
+        }
+
+        function resetUploadAndStaging() {
+            selectedFileBase64 = null;
+            selectedFileMimeType = null;
+            stagingItems = [];
+            document.getElementById("receipt-file-input").value = "";
+            document.getElementById("camera-input").value = "";
+            document.getElementById("file-preview-container").classList.add("hidden");
+            document.getElementById("upload-prompt").classList.remove("hidden");
+            document.getElementById("staging-card").classList.add("hidden");
+            document.getElementById("api-error-box").classList.add("hidden");
+        }
+
+        function handleFileSelection(file) {
+            if (!file) return;
+            const validTypes = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
+            if (!validTypes.includes(file.type)) {
+                showToast("يرجى رفع صورة (JPG, PNG, WEBP) أو ملف PDF فقط.", "error");
+                return;
+            }
+            if (file.size > 15 * 1024 * 1024) {
+                showToast("حجم الملف كبير جداً (الحد الأقصى 15 ميجابايت).", "error");
+                return;
+            }
+
+            selectedFileMimeType = file.type;
+            document.getElementById("api-error-box").classList.add("hidden");
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const dataUrl = e.target.result;
+                selectedFileBase64 = dataUrl.split(",")[1];
+                document.getElementById("upload-prompt").classList.add("hidden");
+                document.getElementById("file-preview-container").classList.remove("hidden");
+
+                const imgPrev = document.getElementById("image-preview");
+                const pdfPrev = document.getElementById("pdf-preview");
+
+                if (file.type === "application/pdf") {
+                    imgPrev.classList.add("hidden");
+                    pdfPrev.classList.remove("hidden");
+                    document.getElementById("pdf-filename").textContent = file.name;
+                } else {
+                    pdfPrev.classList.add("hidden");
+                    imgPrev.classList.remove("hidden");
+                    imgPrev.src = dataUrl;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /**
+         * ============================================================================
+         * 9. تحديث الإحصائيات والرسوم البيانية (DOUGHNUT + BAR) والجدول
+         * ============================================================================
+         */
+        function renderAll() {
+            updateCurrencyLabels();
+            renderKPIs();
+            renderCharts();
+            renderTable();
+        }
+
+        function updateCurrencyLabels() {
+            document.querySelectorAll(".currency-label").forEach(el => el.textContent = currentCurrency);
+        }
+
+        function renderKPIs() {
+            const totalAmount = expenses.reduce((s, i) => s + (Number(i.totalPrice) || 0), 0);
+            const uniqueReceipts = new Set(expenses.map(i => i.receiptId)).size;
+            const totalItems = expenses.length;
+
+            const catTotals = {};
+            const storeTotals = {};
+            expenses.forEach(i => {
+                const amt = Number(i.totalPrice) || 0;
+                catTotals[i.category] = (catTotals[i.category] || 0) + amt;
+                const st = i.store || "غير محدد";
+                storeTotals[st] = (storeTotals[st] || 0) + amt;
+            });
+
+            let topCat = "-";
+            let topCatAmt = 0;
+            Object.entries(catTotals).forEach(([c, a]) => {
+                if (a > topCatAmt) { topCatAmt = a; topCat = c; }
+            });
+
+            let topStore = "-";
+            let topStoreAmt = 0;
+            Object.entries(storeTotals).forEach(([s, a]) => {
+                if (a > topStoreAmt) { topStoreAmt = a; topStore = s; }
+            });
+
+            document.getElementById("kpi-total-amount").textContent = totalAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById("kpi-receipts-count").textContent = uniqueReceipts;
+            document.getElementById("kpi-items-count").textContent = totalItems;
+            document.getElementById("kpi-top-category").textContent = topCat;
+            document.getElementById("kpi-top-category-amount").textContent = topCatAmt.toFixed(2);
+            document.getElementById("kpi-top-store").textContent = topStore;
+            document.getElementById("kpi-top-store-amount").textContent = topStoreAmt.toFixed(2);
+        }
+
+        function renderCharts() {
+            const doughnutCtx = document.getElementById("category-doughnut-chart").getContext("2d");
+            const barCtx = document.getElementById("stores-bar-chart").getContext("2d");
+            const doughnutEmpty = document.getElementById("doughnut-empty-state");
+            const barEmpty = document.getElementById("bar-empty-state");
+            const breakdownList = document.getElementById("category-breakdown-list");
+
+            const catTotals = {};
+            const storeTotals = {};
+            let grandTotal = 0;
+
+            expenses.forEach(item => {
+                const amt = Number(item.totalPrice) || 0;
+                catTotals[item.category] = (catTotals[item.category] || 0) + amt;
+                const st = item.store || "غير محدد";
+                storeTotals[st] = (storeTotals[st] || 0) + amt;
+                grandTotal += amt;
+            });
+
+            if (expenses.length === 0 || grandTotal === 0) {
+                if (doughnutChartInstance) { doughnutChartInstance.destroy(); doughnutChartInstance = null; }
+                if (barChartInstance) { barChartInstance.destroy(); barChartInstance = null; }
+                doughnutEmpty.classList.remove("hidden");
+                barEmpty.classList.remove("hidden");
+                breakdownList.innerHTML = "";
+                return;
+            }
+
+            doughnutEmpty.classList.add("hidden");
+            barEmpty.classList.add("hidden");
+
+            const sortedCats = CATEGORIES
+                .map(c => ({ ...c, amount: catTotals[c.id] || 0 }))
+                .filter(c => c.amount > 0)
+                .sort((a, b) => b.amount - a.amount);
+
+            if (doughnutChartInstance) doughnutChartInstance.destroy();
+            doughnutChartInstance = new Chart(doughnutCtx, {
+                type: "doughnut",
+                data: {
+                    labels: sortedCats.map(c => c.label),
+                    datasets: [{
+                        data: sortedCats.map(c => c.amount),
+                        backgroundColor: sortedCats.map(c => c.color),
+                        borderWidth: 2,
+                        borderColor: "#FDFBF7",
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: "66%",
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            rtl: true,
+                            titleFont: { family: "Tajawal", size: 13 },
+                            bodyFont: { family: "Tajawal", size: 13 },
+                            callbacks: {
+                                label: ctx => ` ${ctx.parsed.toFixed(2)} ${currentCurrency} (${((ctx.parsed / grandTotal) * 100).toFixed(1)}%)`
+                            }
+                        }
+                    }
+                }
+            });
+
+            breakdownList.innerHTML = sortedCats.map(cat => {
+                const pct = ((cat.amount / grandTotal) * 100).toFixed(1);
+                return `
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="font-bold text-sandDark-800 flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full inline-block" style="background-color: ${cat.color}"></span>
+                                ${cat.label}
+                            </span>
+                            <span class="font-extrabold text-sandDark-900">
+                                ${cat.amount.toFixed(2)} ${currentCurrency}
+                                <span class="text-sandDark-700/60 font-normal mr-1">(${pct}%)</span>
+                            </span>
+                        </div>
+                        <div class="w-full bg-cream-200 rounded-full h-1.5 overflow-hidden">
+                            <div class="h-full rounded-full transition-all duration-500" style="width: ${pct}%; background-color: ${cat.color}"></div>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+            const topStores = Object.entries(storeTotals)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 6);
+
+            if (barChartInstance) barChartInstance.destroy();
+            barChartInstance = new Chart(barCtx, {
+                type: "bar",
+                data: {
+                    labels: topStores.map(s => s[0]),
+                    datasets: [{
+                        label: `المبلغ (${currentCurrency})`,
+                        data: topStores.map(s => s[1]),
+                        backgroundColor: ["#7E4D1B", "#9C6327", "#B87D3B", "#D97706", "#15803D", "#5C4D3C"],
+                        borderRadius: 10,
+                        barThickness: 28
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            rtl: true,
+                            titleFont: { family: "Tajawal", size: 13 },
+                            bodyFont: { family: "Tajawal", size: 13 },
+                            callbacks: {
+                                label: ctx => ` ${ctx.parsed.y.toFixed(2)} ${currentCurrency}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { font: { family: "Tajawal", weight: "bold", size: 11 }, color: "#423629" },
+                            grid: { display: false }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: { font: { family: "Tajawal", size: 11 }, color: "#5C4D3C" },
+                            grid: { color: "#F3E9D8" }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById("expenses-table-body");
+            const emptyState = document.getElementById("table-empty-state");
+            const searchQuery = document.getElementById("filter-search").value.trim().toLowerCase();
+            const categoryFilter = document.getElementById("filter-category").value;
+
+            const filtered = expenses.filter(item => {
+                const matchesCat = categoryFilter === "ALL" || item.category === categoryFilter;
+                const matchesSearch = !searchQuery ||
+                    item.name.toLowerCase().includes(searchQuery) ||
+                    (item.store && item.store.toLowerCase().includes(searchQuery));
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = "";
+                emptyState.classList.remove("hidden");
+                return;
+            }
+
+            emptyState.classList.add("hidden");
+
+            tbody.innerHTML = filtered.map(item => {
+                const catObj = CATEGORIES.find(c => c.id === item.category) || CATEGORIES[CATEGORIES.length - 1];
+                const catOpts = CATEGORIES.map(c =>
+                    `<option value="${c.id}" ${c.id === item.category ? "selected" : ""}>${c.label}</option>`
+                ).join("");
+
+                return `
+                    <tr class="hover:bg-cream-200/40 transition">
+                        <td class="py-3.5 px-4 font-bold text-sandDark-900">${escapeHtml(item.name)}</td>
+                        <td class="py-3.5 px-4">
+                            <select onchange="quickUpdateCategory('${item.id}', this.value)" class="text-xs font-bold px-2.5 py-1 rounded-xl border cursor-pointer focus:outline-none focus:ring-2 focus:ring-caramel-500 ${catObj.bg}">
+                                ${catOpts}
+                            </select>
+                        </td>
+                        <td class="py-3.5 px-4 text-sandDark-800 font-semibold">${escapeHtml(item.store || "-")}</td>
+                        <td class="py-3.5 px-4 text-sandDark-700 text-xs font-bold">${escapeHtml(item.date)}</td>
+                        <td class="py-3.5 px-4 text-center font-bold text-sandDark-700">${item.quantity}</td>
+                        <td class="py-3.5 px-4 font-extrabold text-caramel-800">
+                            ${Number(item.totalPrice).toFixed(2)} <span class="text-xs font-normal text-sandDark-700/70">${currentCurrency}</span>
+                        </td>
+                        <td class="py-3.5 px-4 text-center">
+                            <div class="inline-flex items-center gap-1">
+                                <button type="button" onclick="openEditModal('${item.id}')" class="p-1.5 text-sandDark-700/70 hover:text-caramel-700 hover:bg-cream-200 rounded-xl transition cursor-pointer" title="تعديل">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                </button>
+                                <button type="button" onclick="deleteExpenseItem('${item.id}')" class="p-1.5 text-sandDark-700/70 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition cursor-pointer" title="حذف">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        /**
+         * ============================================================================
+         * 10. التعديل والحذف وتصدير PDF و CSV والاستيراد
+         * ============================================================================
+         */
+        window.quickUpdateCategory = function(id, newCat) {
+            const idx = expenses.findIndex(e => e.id === id);
+            if (idx !== -1) {
+                expenses[idx].category = newCat;
+                saveToStorage();
+                renderKPIs();
+                renderCharts();
+                renderTable();
+                showToast("تم تحديث فئة الصنف", "success");
+            }
+        };
+
+        window.deleteExpenseItem = function(id) {
+            expenses = expenses.filter(e => e.id !== id);
+            saveToStorage();
+            renderAll();
+            showToast("تم حذف الصنف من السجل", "info");
+        };
+
+        window.openEditModal = function(id) {
+            const item = expenses.find(e => e.id === id);
+            if (!item) return;
+            document.getElementById("edit-item-id").value = item.id;
+            document.getElementById("edit-name").value = item.name;
+            document.getElementById("edit-category").value = item.category;
+            document.getElementById("edit-store").value = item.store || "";
+            document.getElementById("edit-qty").value = item.quantity;
+            document.getElementById("edit-price").value = item.totalPrice;
+            document.getElementById("edit-date").value = item.date;
+            document.getElementById("edit-item-modal").classList.remove("hidden");
+        };
+
+        function handleEditFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById("edit-item-id").value;
+            const idx = expenses.findIndex(i => i.id === id);
+            if (idx !== -1) {
+                expenses[idx] = {
+                    ...expenses[idx],
+                    name: document.getElementById("edit-name").value.trim(),
+                    category: document.getElementById("edit-category").value,
+                    store: document.getElementById("edit-store").value.trim() || "غير محدد",
+                    quantity: parseFloat(document.getElementById("edit-qty").value) || 1,
+                    totalPrice: parseFloat(document.getElementById("edit-price").value) || 0,
+                    date: document.getElementById("edit-date").value
+                };
+                saveToStorage();
+                renderAll();
+                showToast("تم حفظ التعديلات بنجاح", "success");
+            }
+            document.getElementById("edit-item-modal").classList.add("hidden");
+        }
+
+        function exportToPDFReport() {
+            if (expenses.length === 0) {
+                showToast("لا توجد مصروفات مسجلة لإنشاء تقرير PDF.", "error");
+                return;
+            }
+
+            const total = expenses.reduce((s, e) => s + (Number(e.totalPrice) || 0), 0);
+            document.getElementById("print-report-date").textContent = `تاريخ إصدار التقرير: ${new Date().toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" })} | عدد الأصناف: ${expenses.length}`;
+            document.getElementById("print-report-total").textContent = `${total.toFixed(2)} ${currentCurrency}`;
+
+            const catTotals = {};
+            expenses.forEach(e => catTotals[e.category] = (catTotals[e.category] || 0) + (Number(e.totalPrice) || 0));
+            document.getElementById("print-categories-summary").innerHTML = Object.entries(catTotals)
+                .sort((a, b) => b[1] - a[1])
+                .map(([c, v]) => `
+                    <div class="border border-slate-300 rounded p-2 bg-amber-50/40">
+                        <div class="font-bold text-slate-700">${escapeHtml(c)}</div>
+                        <div class="font-extrabold text-amber-900 mt-0.5">${v.toFixed(2)} ${currentCurrency}</div>
+                    </div>
+                `).join("");
+
+            document.getElementById("print-report-tbody").innerHTML = expenses.map((item, i) => `
+                <tr>
+                    <td class="border border-slate-300 p-1.5 text-center">${i + 1}</td>
+                    <td class="border border-slate-300 p-1.5 font-bold">${escapeHtml(item.name)}</td>
+                    <td class="border border-slate-300 p-1.5">${escapeHtml(item.category)}</td>
+                    <td class="border border-slate-300 p-1.5">${escapeHtml(item.store || "-")}</td>
+                    <td class="border border-slate-300 p-1.5">${escapeHtml(item.date)}</td>
+                    <td class="border border-slate-300 p-1.5 text-center">${item.quantity}</td>
+                    <td class="border border-slate-300 p-1.5 font-bold">${Number(item.totalPrice).toFixed(2)} ${currentCurrency}</td>
+                </tr>
+            `).join("");
+
+            showToast("جاري فتح نافذة حفظ التقرير بصيغة PDF...", "info");
+            setTimeout(() => window.print(), 300);
+        }
+
+        function exportToCSV() {
+            if (expenses.length === 0) {
+                showToast("لا توجد بيانات لتصديرها حالياً.", "error");
+                return;
+            }
+            const BOM = "\uFEFF";
+            const headers = ["الصنف", "الفئة", "المتجر", "التاريخ", "الكمية", `الإجمالي (${currentCurrency})`];
+            const rows = expenses.map(item => [
+                `"${item.name.replace(/"/g, '""')}"`,
+                `"${item.category}"`,
+                `"${(item.store || "").replace(/"/g, '""')}"`,
+                `"${item.date}"`,
+                item.quantity,
+                Number(item.totalPrice).toFixed(2)
+            ]);
+            const csvContent = BOM + [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `تقرير_مصروفات_بلد_الأفراح_${new Date().toISOString().split("T")[0]}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast("تم تصدير ملف CSV بنجاح!", "success");
+        }
+
+        function handleCSVImport(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result.replace(/^\uFEFF/, "");
+                const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
+                if (lines.length <= 1) {
+                    showToast("ملف CSV فارغ أو غير صالح.", "error");
+                    return;
+                }
+                let importedCount = 0;
+                const today = new Date().toISOString().split("T")[0];
+                for (let i = 1; i < lines.length; i++) {
+                    const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(c => c.replace(/^"|"$/g, "").replace(/""/g, '"').trim());
+                    if (cols.length >= 2 && cols[0]) {
+                        const matchedCat = CATEGORIES.find(c => c.id === cols[1]) ? cols[1] : "أخرى";
+                        expenses.unshift({
+                            id: "IMP-" + Date.now() + "-" + i,
+                            receiptId: "CSV-" + Date.now(),
+                            name: cols[0],
+                            category: matchedCat,
+                            store: cols[2] || "مستورد",
+                            date: cols[3] || today,
+                            quantity: parseFloat(cols[4]) || 1,
+                            totalPrice: parseFloat(cols[5]) || 0
+                        });
+                        importedCount++;
+                    }
+                }
+                if (importedCount > 0) {
+                    saveToStorage();
+                    renderAll();
+                    showToast(`تم استيراد ${importedCount} صنف بنجاح!`, "success");
+                } else {
+                    showToast("لم يتم العثور على صفوف صالحة في الملف.", "error");
+                }
+            };
+            reader.readAsText(file, "UTF-8");
+        }
+
+        function loadDemoData() {
+            const today = new Date().toISOString().split("T")[0];
+            const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+
+            const sampleItems = [
+                { id: "D-1", receiptId: "REC-301", name: "حليب طازج كامل الدسم 2 لتر", category: "مواد غذائية", store: "سوبر ماركت البركة", date: today, quantity: 1, totalPrice: 12.50 },
+                { id: "D-2", receiptId: "REC-301", name: "صدور دجاج طازجة 1 كجم", category: "لحوم ودواجن", store: "سوبر ماركت البركة", date: today, quantity: 1, totalPrice: 28.00 },
+                { id: "D-3", receiptId: "REC-301", name: "طماطم بلدي + تفاح أحمر", category: "خضار وفواكه", store: "سوبر ماركت البركة", date: today, quantity: 2, totalPrice: 23.50 },
+                { id: "D-4", receiptId: "REC-301", name: "مسحوق غسيل ملابس 3 كجم", category: "منظفات وعناية", store: "سوبر ماركت البركة", date: today, quantity: 1, totalPrice: 34.00 },
+                { id: "D-5", receiptId: "REC-302", name: "قهوة عربية محمصة + شوكولاتة", category: "مشروبات وحلويات", store: "محمصة الدار", date: yesterday, quantity: 1, totalPrice: 40.50 },
+                { id: "D-6", receiptId: "REC-303", name: "عشاء عائلي مشويات", category: "مطاعم وكافيهات", store: "مطعم الأصالة", date: yesterday, quantity: 1, totalPrice: 115.00 },
+                { id: "D-7", receiptId: "REC-304", name: "فاتورة الكهرباء والإنترنت", category: "فواتير وخدمات", store: "الخدمات العامة", date: yesterday, quantity: 1, totalPrice: 185.00 }
+            ];
+
+            expenses = [...sampleItems, ...expenses];
+            saveToStorage();
+            renderAll();
+            showToast("تمت إضافة بيانات تجريبية بنجاح!", "success");
+        }
+
+        /**
+         * ============================================================================
+         * 11. ربط الأحداث والمساعدات البصرية
+         * ============================================================================
+         */
+        function setupEventListeners() {
+            // زر قول آخر من أقوال السلف الصالح
+            document.getElementById("btn-next-salaf-quote").addEventListener("click", () => {
+                showRandomSalafQuote(true);
+            });
+
+            // حفظ المفتاح تلقائياً عند الكتابة/اللصق وأيضاً عند الضغط على الزر أو Enter
+            const saveKeyBtn = document.getElementById("btn-save-api-key");
+            const apiKeyInput = document.getElementById("api-key-input");
+
+            saveKeyBtn.addEventListener("click", (e) => {
+                e.preventDefault();
+                handleSaveApiKey(false);
+            });
+
+            apiKeyInput.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleSaveApiKey(false);
+                }
+            });
+
+            apiKeyInput.addEventListener("change", () => {
+                if (apiKeyInput.value.trim()) handleSaveApiKey(true);
+            });
+
+            document.getElementById("btn-test-api-key").addEventListener("click", (e) => {
+                e.preventDefault();
+                testGeminiApiKey();
+            });
+
+            document.getElementById("btn-clear-api-key").addEventListener("click", (e) => {
+                e.preventDefault();
+                currentApiKey = "";
+                safeStorageRemove(API_KEY_STORAGE);
+                updateApiKeyStatusUI();
+                document.getElementById("api-error-box").classList.add("hidden");
+                showToast("تم مسح المفتاح المحفوظ.", "info");
+            });
+
+            document.getElementById("btn-toggle-key-visibility").addEventListener("click", (e) => {
+                e.preventDefault();
+                apiKeyInput.type = apiKeyInput.type === "password" ? "text" : "password";
+            });
+
+            // التبديل بين تبويب AI وتبويب الإضافة اليدوية
+            const tabAiBtn = document.getElementById("tab-btn-ai");
+            const tabManualBtn = document.getElementById("tab-btn-manual");
+            const panelAi = document.getElementById("panel-ai-upload");
+            const panelManual = document.getElementById("panel-manual-entry");
+
+            tabAiBtn.addEventListener("click", () => {
+                tabAiBtn.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-caramel-700 text-white shadow-sm transition inline-flex items-center gap-1.5 cursor-pointer";
+                tabManualBtn.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-sandDark-700 hover:text-sandDark-900 transition inline-flex items-center gap-1.5 cursor-pointer";
+                panelAi.classList.remove("hidden");
+                panelManual.classList.add("hidden");
+            });
+
+            tabManualBtn.addEventListener("click", () => {
+                tabManualBtn.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-caramel-700 text-white shadow-sm transition inline-flex items-center gap-1.5 cursor-pointer";
+                tabAiBtn.className = "px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-sandDark-700 hover:text-sandDark-900 transition inline-flex items-center gap-1.5 cursor-pointer";
+                panelManual.classList.remove("hidden");
+                panelAi.classList.add("hidden");
+            });
+
+            // الإضافة اليدوية المتعددة
+            document.getElementById("btn-add-manual-row").addEventListener("click", () => {
+                manualBatchRows.push({ id: Date.now(), name: "", category: "مواد غذائية", quantity: 1, totalPrice: "" });
+                renderManualBatchRows();
+            });
+            document.getElementById("inline-manual-form").addEventListener("submit", handleManualBatchSubmit);
+
+            // المستشار المالي الذكي (Chat)
+            document.getElementById("ai-chat-form").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const val = document.getElementById("ai-chat-input").value;
+                handleSendChatMessage(val);
+            });
+
+            document.querySelectorAll(".quick-chat-prompt").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    handleSendChatMessage(btn.dataset.prompt);
+                });
+            });
+
+            document.getElementById("btn-clear-chat").addEventListener("click", () => {
+                chatHistory = [];
+                const container = document.getElementById("ai-chat-messages");
+                container.innerHTML = `
+                    <div class="flex items-start gap-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-caramel-700 text-amber-200 flex items-center justify-center shrink-0 mt-0.5">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
+                        </div>
+                        <div class="bg-white border border-cream-300 rounded-2xl rounded-tr-sm p-3.5 text-xs sm:text-sm text-sandDark-800 leading-relaxed shadow-2xs max-w-[88%]">
+                            تم بدء محادثة جديدة في <strong>بلد الأفراح</strong>. اسأليني عن مصروفاتكِ أو اطلبي خطة توفير!
+                        </div>
+                    </div>
+                `;
+                if (window.lucide) lucide.createIcons();
+            });
+
+            // العملة والتصدير والاستيراد
+            document.getElementById("currency-select").addEventListener("change", (e) => {
+                currentCurrency = e.target.value;
+                saveToStorage();
+                renderAll();
+            });
+
+            document.getElementById("btn-export-pdf").addEventListener("click", exportToPDFReport);
+            document.getElementById("btn-export-csv").addEventListener("click", exportToCSV);
+
+            const csvImportInput = document.getElementById("csv-import-input");
+            document.getElementById("btn-import-csv").addEventListener("click", () => csvImportInput.click());
+            csvImportInput.addEventListener("change", (e) => {
+                handleCSVImport(e.target.files[0]);
+                e.target.value = "";
+            });
+
+            document.getElementById("btn-demo-data").addEventListener("click", loadDemoData);
+
+            document.getElementById("btn-clear-all").addEventListener("click", () => {
+                if (expenses.length === 0) {
+                    showToast("السجل فارغ بالفعل.", "info");
+                    return;
+                }
+                showCustomConfirm(
+                    "مسح جميع المصروفات",
+                    "هل أنتِ متأكدة من حذف جميع المصروفات المسجلة؟ لا يمكن التراجع عن هذا الإجراء.",
+                    () => {
+                        expenses = [];
+                        saveToStorage();
+                        renderAll();
+                        showToast("تم مسح جميع البيانات.", "info");
+                    }
+                );
+            });
+
+            // رفع الملفات والكاميرا
+            const fileInput = document.getElementById("receipt-file-input");
+            const cameraInput = document.getElementById("camera-input");
+            const dropZone = document.getElementById("drop-zone");
+
+            document.getElementById("btn-select-file").addEventListener("click", (e) => { e.stopPropagation(); fileInput.click(); });
+            document.getElementById("btn-camera-capture").addEventListener("click", (e) => { e.stopPropagation(); cameraInput.click(); });
+            dropZone.addEventListener("click", (e) => {
+                if (e.target.closest("button") || selectedFileBase64) return;
+                fileInput.click();
+            });
+
+            fileInput.addEventListener("change", (e) => handleFileSelection(e.target.files[0]));
+            cameraInput.addEventListener("change", (e) => handleFileSelection(e.target.files[0]));
+
+            dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.classList.add("border-caramel-600", "bg-cream-200/60"); });
+            dropZone.addEventListener("dragleave", () => { dropZone.classList.remove("border-caramel-600", "bg-cream-200/60"); });
+            dropZone.addEventListener("drop", (e) => {
+                e.preventDefault();
+                dropZone.classList.remove("border-caramel-600", "bg-cream-200/60");
+                if (e.dataTransfer.files.length > 0) handleFileSelection(e.dataTransfer.files[0]);
+            });
+
+            document.getElementById("btn-remove-file").addEventListener("click", (e) => { e.stopPropagation(); resetUploadAndStaging(); });
+            document.getElementById("btn-analyze-receipt").addEventListener("click", analyzeReceiptWithGemini);
+
+            // مراجعة الفاتورة
+            document.getElementById("btn-add-staging-row").addEventListener("click", () => {
+                stagingItems.push({ tempId: Date.now(), name: "", quantity: 1, totalPrice: 0, category: "أخرى" });
+                renderStagingItems();
+            });
+            document.getElementById("btn-cancel-staging").addEventListener("click", resetUploadAndStaging);
+            document.getElementById("btn-save-staging").addEventListener("click", commitStagingToExpenses);
+
+            // نافذة التعديل الفردي
+            document.getElementById("btn-close-edit-modal").addEventListener("click", () => document.getElementById("edit-item-modal").classList.add("hidden"));
+            document.getElementById("btn-cancel-edit-modal").addEventListener("click", () => document.getElementById("edit-item-modal").classList.add("hidden"));
+            document.getElementById("edit-item-form").addEventListener("submit", handleEditFormSubmit);
+
+            // البحث والفلترة
+            document.getElementById("filter-search").addEventListener("input", renderTable);
+            document.getElementById("filter-category").addEventListener("change", renderTable);
+        }
+
+        function showCustomConfirm(title, message, onConfirm) {
+            const modal = document.getElementById("confirm-modal");
+            document.getElementById("confirm-title").textContent = title;
+            document.getElementById("confirm-message").textContent = message;
+            modal.classList.remove("hidden");
+
+            const yesBtn = document.getElementById("btn-confirm-yes");
+            const noBtn = document.getElementById("btn-confirm-no");
+
+            const cleanup = () => {
+                modal.classList.add("hidden");
+                yesBtn.onclick = null;
+                noBtn.onclick = null;
+            };
+
+            yesBtn.onclick = () => { cleanup(); onConfirm(); };
+            noBtn.onclick = cleanup;
+        }
+
+        function showToast(message, type = "info") {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            const styles = {
+                success: "bg-caramel-800 text-cream-50 border border-amber-300/40",
+                error: "bg-rose-700 text-white border border-rose-500",
+                info: "bg-sandDark-900 text-cream-50 border border-caramel-600/50"
+            };
+            toast.className = `animate-toast ${styles[type] || styles.info} px-4 py-3 rounded-2xl shadow-xl text-xs sm:text-sm font-bold flex items-center justify-between gap-3 pointer-events-auto`;
+            toast.innerHTML = `<span>${escapeHtml(message)}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                toast.style.transition = "opacity 0.3s ease";
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return "";
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
