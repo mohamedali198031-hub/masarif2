@@ -29,21 +29,28 @@
                     },
                     colors: {
                         cream: {
-                            50: '#FDFBF7',
-                            100: '#FAF5EC',
-                            200: '#F3E9D8',
-                            300: '#E8D8BE',
-                            400: '#D9C09B',
+                            50: '#FFFDF9',
+                            100: '#FAF6F0',
+                            200: '#F3ECE0',
+                            300: '#E6D9C6',
+                            400: '#D4C1A5',
                         },
                         caramel: {
                             50: '#FDF8F2',
                             100: '#F9EEDB',
                             200: '#F1D9B3',
-                            500: '#B87D3B',
-                            600: '#9C6327',
-                            700: '#7E4D1B',
-                            800: '#613B15',
-                            900: '#472B0F',
+                            400: '#C6923A',
+                            500: '#A8713E',
+                            600: '#8C5A32',
+                            700: '#6B4226',
+                            800: '#52311B',
+                            900: '#3B2212',
+                        },
+                        olive: {
+                            50: '#F2F6F3',
+                            100: '#E1ECE4',
+                            600: '#4A6B53',
+                            700: '#395441',
                         },
                         sandDark: {
                             700: '#5C4D3C',
@@ -58,7 +65,7 @@
 
     <style>
         body {
-            background-color: #FAF5EC;
+            background-color: #FAF6F0;
             color: #2B2219;
         }
         /* تنسيقات الطباعة لتصدير تقرير PDF عربي نظيف */
@@ -84,14 +91,14 @@
             height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #F3E9D8;
+            background: #F3ECE0;
         }
         ::-webkit-scrollbar-thumb {
             background: #C7B293;
             border-radius: 9999px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #9C6327;
+            background: #8C5A32;
         }
         @keyframes slideUpFade {
             from { opacity: 0; transform: translateY(16px); }
@@ -108,11 +115,11 @@
     <div id="toast-container" class="no-print fixed bottom-5 left-5 z-50 flex flex-col gap-2.5 max-w-md w-full pointer-events-none px-4 sm:px-0"></div>
 
     <!-- الشريط العلوي الدافئ (Warm Beige & Caramel Header) -->
-    <header class="no-print bg-gradient-to-l from-sandDark-900 via-caramel-900 to-caramel-800 text-cream-50 sticky top-0 z-30 shadow-lg border-b border-caramel-700/60">
+    <header class="no-print bg-gradient-to-l from-sandDark-900 via-caramel-800 to-caramel-700 text-cream-50 sticky top-0 z-30 shadow-lg border-b border-caramel-600/60">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
             <!-- الشعار واسم التطبيق -->
             <div class="flex items-center gap-3.5">
-                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-300 via-caramel-500 to-caramel-700 flex items-center justify-center text-sandDark-900 shadow-lg ring-2 ring-cream-200/40">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-200 via-caramel-400 to-caramel-600 flex items-center justify-center text-sandDark-900 shadow-lg ring-2 ring-cream-200/40">
                     <i data-lucide="sparkles" class="w-6 h-6"></i>
                 </div>
                 <div>
@@ -127,7 +134,7 @@
             <!-- أدوات التحكم السريعة -->
             <div class="flex items-center gap-2 sm:gap-2.5 flex-wrap">
                 <!-- اختيار العملة -->
-                <select id="currency-select" aria-label="اختر العملة" class="bg-sandDark-900/70 hover:bg-sandDark-900 text-cream-100 text-xs sm:text-sm font-bold rounded-xl px-3 py-2 border border-caramel-600/60 focus:outline-none focus:ring-2 focus:ring-amber-300 transition cursor-pointer">
+                <select id="currency-select" aria-label="اختر العملة" class="bg-sandDark-900/70 hover:bg-sandDark-900 text-cream-100 text-xs sm:text-sm font-bold rounded-xl px-3 py-2 border border-caramel-500/60 focus:outline-none focus:ring-2 focus:ring-amber-300 transition cursor-pointer">
                     <option value="ر.س" selected>ر.س (SAR)</option>
                     <option value="ج.م">ج.م (EGP)</option>
                     <option value="د.إ">د.إ (AED)</option>
@@ -143,13 +150,13 @@
                 </button>
 
                 <!-- تصدير CSV -->
-                <button type="button" id="btn-export-csv" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-cream-100 bg-caramel-800/80 hover:bg-caramel-700 border border-caramel-600/60 px-3 py-2 rounded-xl transition cursor-pointer">
+                <button type="button" id="btn-export-csv" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-cream-100 bg-caramel-800/90 hover:bg-caramel-600 border border-caramel-500/60 px-3 py-2 rounded-xl transition cursor-pointer">
                     <i data-lucide="table" class="w-4 h-4 text-amber-300"></i>
                     <span class="hidden sm:inline">Excel / CSV</span>
                 </button>
 
                 <!-- استيراد CSV -->
-                <button type="button" id="btn-import-csv" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-cream-100 bg-caramel-800/80 hover:bg-caramel-700 border border-caramel-600/60 px-3 py-2 rounded-xl transition cursor-pointer" title="استيراد ملف CSV">
+                <button type="button" id="btn-import-csv" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-cream-100 bg-caramel-800/90 hover:bg-caramel-600 border border-caramel-500/60 px-3 py-2 rounded-xl transition cursor-pointer" title="استيراد ملف CSV">
                     <i data-lucide="upload" class="w-4 h-4 text-amber-300"></i>
                     <span class="hidden md:inline">استيراد</span>
                 </button>
@@ -173,23 +180,29 @@
     <main class="no-print flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
 
         <!-- 1. بطاقة حكمة اليوم من أقوال السلف الصالح -->
-        <section id="salaf-wisdom-card" class="bg-gradient-to-l from-cream-200/90 via-cream-50 to-caramel-50 rounded-3xl p-4 sm:p-5 border border-cream-400/70 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <section id="salaf-wisdom-card" class="bg-gradient-to-l from-cream-200/90 via-cream-50 to-caramel-50 rounded-3xl p-4 sm:p-5 border border-cream-300 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-start gap-3.5">
                 <div class="w-11 h-11 rounded-2xl bg-caramel-600 text-cream-50 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
                     <i data-lucide="book-open" class="w-5 h-5"></i>
                 </div>
                 <div>
-                    <div class="flex items-center gap-2 mb-1">
+                    <div class="flex flex-wrap items-center gap-2 mb-1">
                         <span class="text-xs font-extrabold text-caramel-700 bg-caramel-100 px-2.5 py-0.5 rounded-full border border-caramel-200">من درر السلف الصالح</span>
                         <span id="salaf-author-badge" class="text-xs font-bold text-sandDark-700"></span>
                     </div>
                     <p id="salaf-quote-text" class="text-sm sm:text-base font-bold text-sandDark-900 leading-relaxed"></p>
                 </div>
             </div>
-            <button type="button" id="btn-next-salaf-quote" class="self-end sm:self-center shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-cream-200 text-caramel-800 border border-cream-300 text-xs font-extrabold shadow-2xs transition cursor-pointer">
-                <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-caramel-600"></i>
-                <span>قول آخر</span>
-            </button>
+            <div class="flex items-center gap-2 self-end sm:self-center shrink-0">
+                <button type="button" id="btn-copy-salaf-quote" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white hover:bg-cream-200 text-sandDark-800 border border-cream-300 text-xs font-bold shadow-2xs transition cursor-pointer" title="نسخ القول">
+                    <i data-lucide="copy" class="w-3.5 h-3.5 text-caramel-600"></i>
+                    <span>نسخ</span>
+                </button>
+                <button type="button" id="btn-next-salaf-quote" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-caramel-600 hover:bg-caramel-700 text-cream-50 text-xs font-extrabold shadow-2xs transition cursor-pointer">
+                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-amber-200"></i>
+                    <span>قول آخر</span>
+                </button>
+            </div>
         </section>
 
         <!-- 2. بطاقة إعداد وحفظ مفتاح Gemini API المجاني -->
@@ -252,26 +265,26 @@
 
             <!-- عدد الفواتير والأصناف -->
             <div class="bg-cream-50 rounded-3xl p-5 border border-cream-300 shadow-sm hover:shadow-md transition relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-1.5 h-full bg-gradient-to-b from-amber-500 to-caramel-600"></div>
+                <div class="absolute top-0 right-0 w-1.5 h-full bg-gradient-to-b from-caramel-400 to-caramel-600"></div>
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs sm:text-sm font-bold text-sandDark-700">الفواتير والأصناف</span>
+                    <span class="text-xs sm:text-sm font-bold text-sandDark-700">عدد الفواتير</span>
                     <div class="w-10 h-10 rounded-2xl bg-amber-100/80 text-amber-800 flex items-center justify-center">
                         <i data-lucide="receipt" class="w-5 h-5"></i>
                     </div>
                 </div>
                 <div class="flex items-baseline gap-1.5">
                     <h2 id="kpi-receipts-count" class="font-heading text-2xl sm:text-3xl font-extrabold text-sandDark-900">0</h2>
-                    <span class="text-sm font-bold text-amber-800">عملية</span>
+                    <span class="text-sm font-bold text-amber-800">فاتورة</span>
                 </div>
                 <p class="text-xs text-sandDark-700/70 mt-1">تضم <span id="kpi-items-count" class="font-bold text-sandDark-900">0</span> صنف مفصّل</p>
             </div>
 
             <!-- أعلى فئة إنفاقاً -->
             <div class="bg-cream-50 rounded-3xl p-5 border border-cream-300 shadow-sm hover:shadow-md transition relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-1.5 h-full bg-gradient-to-b from-emerald-600 to-teal-700"></div>
+                <div class="absolute top-0 right-0 w-1.5 h-full bg-gradient-to-b from-olive-600 to-olive-700"></div>
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-xs sm:text-sm font-bold text-sandDark-700">أعلى فئة إنفاقاً</span>
-                    <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+                    <div class="w-10 h-10 rounded-2xl bg-olive-100 text-olive-700 flex items-center justify-center">
                         <i data-lucide="trending-up" class="w-5 h-5"></i>
                     </div>
                 </div>
@@ -279,32 +292,35 @@
                 <p class="text-xs text-sandDark-700/70 mt-1.5">بقيمة <span id="kpi-top-category-amount" class="font-bold text-sandDark-900">0.00</span> <span class="currency-label">ر.س</span></p>
             </div>
 
-            <!-- أعلى متجر إنفاقاً -->
+            <!-- متوسط الفاتورة -->
             <div class="bg-cream-50 rounded-3xl p-5 border border-cream-300 shadow-sm hover:shadow-md transition relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-1.5 h-full bg-gradient-to-b from-sandDark-700 to-sandDark-900"></div>
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs sm:text-sm font-bold text-sandDark-700">أكثر متجر إنفاقاً</span>
+                    <span class="text-xs sm:text-sm font-bold text-sandDark-700">متوسط الفاتورة</span>
                     <div class="w-10 h-10 rounded-2xl bg-cream-200 text-sandDark-800 flex items-center justify-center">
-                        <i data-lucide="store" class="w-5 h-5"></i>
+                        <i data-lucide="calculator" class="w-5 h-5"></i>
                     </div>
                 </div>
-                <h2 id="kpi-top-store" class="font-heading text-lg sm:text-xl font-extrabold text-sandDark-900 truncate">-</h2>
-                <p class="text-xs text-sandDark-700/70 mt-1.5">بإجمالي <span id="kpi-top-store-amount" class="font-bold text-sandDark-900">0.00</span> <span class="currency-label">ر.س</span></p>
+                <div class="flex items-baseline gap-1.5">
+                    <h2 id="kpi-avg-receipt" class="font-heading text-2xl sm:text-3xl font-extrabold text-sandDark-900">0.00</h2>
+                    <span class="currency-label text-sm font-bold text-sandDark-700">ر.س</span>
+                </div>
+                <p class="text-xs text-sandDark-700/70 mt-1 truncate">أكثر متجر: <span id="kpi-top-store" class="font-bold text-sandDark-900">-</span></p>
             </div>
         </section>
 
         <!-- 4. مساحة الإدخال (رفع فاتورة AI + إضافة يدوية) والمستشار المالي الذكي -->
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-            <!-- العمود الأيمن (7 أعمدة): إدخال الفواتير بالذكاء الاصطناعي أو الإضافة اليدوية -->
-            <div class="lg:col-span-7 space-y-6">
+            <!-- العمود الأيمن (6 أعمدة): إدخال الفواتير بالذكاء الاصطناعي أو الإضافة اليدوية -->
+            <div class="lg:col-span-6 space-y-6">
                 <div class="bg-cream-50 rounded-3xl p-6 border border-cream-300 shadow-sm">
                     <!-- أزرار التبديل بين وضع الذكاء الاصطناعي ووضع الإضافة اليدوية -->
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-5 pb-4 border-b border-cream-200">
                         <div class="inline-flex p-1 bg-cream-200/80 rounded-2xl border border-cream-300/70">
                             <button type="button" id="tab-btn-ai" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold bg-caramel-700 text-white shadow-sm transition inline-flex items-center gap-1.5 cursor-pointer">
                                 <i data-lucide="scan-line" class="w-4 h-4 text-amber-200"></i>
-                                <span>رفع فاتورة (ذكاء اصطناعي)</span>
+                                <span>رفع فاتورة (AI)</span>
                             </button>
                             <button type="button" id="tab-btn-manual" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-sandDark-700 hover:text-sandDark-900 transition inline-flex items-center gap-1.5 cursor-pointer">
                                 <i data-lucide="pen-square" class="w-4 h-4 text-caramel-700"></i>
@@ -436,8 +452,8 @@
                 <div id="staging-card" class="hidden bg-cream-50 rounded-3xl p-6 border-2 border-caramel-500/40 shadow-lg space-y-5">
                     <div class="flex flex-wrap items-center justify-between gap-2 border-b border-cream-200 pb-4">
                         <div>
-                            <span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full mb-1 border border-emerald-200">
-                                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600"></i>
+                            <span class="inline-flex items-center gap-1 text-xs font-bold text-olive-700 bg-olive-50 px-2.5 py-1 rounded-full mb-1 border border-olive-600/20">
+                                <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-olive-600"></i>
                                 تم استخراج الأصناف - يمكنك التعديل قبل الاعتماد
                             </span>
                             <h3 class="font-heading text-lg font-extrabold text-sandDark-900">مراجعة أصناف الفاتورة</h3>
@@ -480,20 +496,20 @@
                 </div>
             </div>
 
-            <!-- العمود الأيسر (5 أعمدة): المستشار المالي الذكي (محادثة AI مجانية + وضع محلي احتياطي) -->
-            <div class="lg:col-span-5 bg-cream-50 rounded-3xl border border-cream-300 shadow-sm flex flex-col h-[550px] overflow-hidden">
+            <!-- العمود الأيسر (6 أعمدة): المستشار المالي الذكي الموسع (ردود طويلة كاملة + زر أكمل الرد) -->
+            <div class="lg:col-span-6 bg-cream-50 rounded-3xl border border-cream-300 shadow-sm flex flex-col h-[640px] overflow-hidden">
                 <!-- ترويسة المستشار الذكي -->
-                <div class="bg-gradient-to-l from-sandDark-900 to-caramel-800 text-cream-50 p-4 sm:p-5 flex items-center justify-between gap-3">
+                <div class="bg-gradient-to-l from-sandDark-900 to-caramel-700 text-cream-50 p-4 sm:p-5 flex items-center justify-between gap-3">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-2xl bg-amber-300/20 border border-amber-300/40 text-amber-200 flex items-center justify-center shrink-0">
                             <i data-lucide="bot" class="w-5 h-5"></i>
                         </div>
                         <div>
-                            <h3 class="font-heading text-base font-extrabold flex items-center gap-2">
+                            <h3 class="font-heading text-base font-extrabold flex flex-wrap items-center gap-2">
                                 المستشار المالي الذكي
-                                <span class="text-[10px] font-bold bg-cream-100/15 text-amber-200 px-2 py-0.5 rounded-full border border-amber-300/30">مجاني</span>
+                                <span class="text-[10px] font-bold bg-cream-100/15 text-amber-200 px-2 py-0.5 rounded-full border border-amber-300/30">ردود مفصلة كاملة • مجاني</span>
                             </h3>
-                            <p class="text-[11px] text-cream-200">يقرأ سجل مصروفاتك ويجيبك فوراً مع بديل محلي ذكي</p>
+                            <p class="text-[11px] text-cream-200">يقرأ سجل مصروفاتك ويجيبك بالتفصيل مع زر «أكمل الرد / توسّع أكثر»</p>
                         </div>
                     </div>
                     <button type="button" id="btn-clear-chat" class="text-cream-200 hover:text-white p-1.5 rounded-xl hover:bg-white/10 transition cursor-pointer" title="مسح المحادثة">
@@ -502,34 +518,37 @@
                 </div>
 
                 <!-- منطقة رسائل المحادثة -->
-                <div id="ai-chat-messages" class="flex-grow p-4 overflow-y-auto space-y-3 bg-cream-100/60">
+                <div id="ai-chat-messages" class="flex-grow p-4 sm:p-5 overflow-y-auto space-y-4 bg-cream-100/60">
                     <div class="flex items-start gap-2.5">
                         <div class="w-8 h-8 rounded-xl bg-caramel-700 text-amber-200 flex items-center justify-center shrink-0 mt-0.5">
                             <i data-lucide="sparkles" class="w-4 h-4"></i>
                         </div>
-                        <div class="bg-white border border-cream-300 rounded-2xl rounded-tr-sm p-3.5 text-xs sm:text-sm text-sandDark-800 leading-relaxed shadow-2xs max-w-[88%]">
-                            أهلاً بكِ في <strong>بلد الأفراح</strong>! أنا مستشاركِ المالي الذكي. أستطيع قراءة جميع مصروفاتكِ وفواتيركِ المسجلة ومساعدتكِ في تحليلها وتوفير ميزانيتكِ.
+                        <div class="bg-white border border-cream-300 rounded-2xl rounded-tr-sm p-3.5 text-xs sm:text-sm text-sandDark-800 leading-relaxed shadow-2xs max-w-[90%]">
+                            أهلاً بكِ في <strong>بلد الأفراح</strong>! أنا مستشاركِ المالي الذكي. أستطيع قراءة جميع مصروفاتكِ وفواتيركِ المسجلة وتقديم تحليل مفصّل وخطط توفير شاملة دون اختصار أو انقطاع.
                             <span class="block mt-1.5 text-[11px] text-caramel-700 font-bold">💡 يعمل مجاناً بمفتاح Gemini API، وحتى بدون مفتاح سأجيبكِ من محللي الذكي المحلي!</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- أزرار الأسئلة السريعة -->
-                <div class="px-3.5 py-2 bg-cream-50 border-t border-cream-200 flex items-center gap-1.5 overflow-x-auto">
-                    <button type="button" class="quick-chat-prompt shrink-0 text-[11px] font-bold bg-cream-200/80 hover:bg-cream-300 text-sandDark-900 border border-cream-300 px-2.5 py-1.5 rounded-full transition cursor-pointer" data-prompt="حلل مصروفاتي واقترح خطة توفير">
-                        📊 حلل مصروفاتي واقترح خطة توفير
+                <!-- أزرار الأسئلة السريعة الجاهزة -->
+                <div class="px-3.5 py-2.5 bg-cream-50 border-t border-cream-200 flex items-center gap-1.5 overflow-x-auto">
+                    <button type="button" class="quick-chat-prompt shrink-0 text-[11px] font-bold bg-cream-200/80 hover:bg-cream-300 text-sandDark-900 border border-cream-300 px-3 py-1.5 rounded-full transition cursor-pointer" data-prompt="قدّم لي تحليلاً شاملاً ومفصلاً لجميع مصروفاتي الحالية وفئاتها ومتاجرها">
+                        📊 تحليل شامل لمصروفاتي
                     </button>
-                    <button type="button" class="quick-chat-prompt shrink-0 text-[11px] font-bold bg-amber-100/80 hover:bg-amber-200 text-amber-950 border border-amber-300/70 px-2.5 py-1.5 rounded-full transition cursor-pointer" data-prompt="ما هي أعلى فئة استهلاكاً؟">
-                        🏆 ما هي أعلى فئة استهلاكاً؟
+                    <button type="button" class="quick-chat-prompt shrink-0 text-[11px] font-bold bg-amber-100/80 hover:bg-amber-200 text-amber-950 border border-amber-300/70 px-3 py-1.5 rounded-full transition cursor-pointer" data-prompt="ضع لي خطة توفير عملية ومفصلة خطوة بخطوة بناءً على مشترياتي">
+                        💡 خطة توفير عملية
                     </button>
-                    <button type="button" class="quick-chat-prompt shrink-0 text-[11px] font-bold bg-cream-200/80 hover:bg-cream-300 text-sandDark-900 border border-cream-300 px-2.5 py-1.5 rounded-full transition cursor-pointer" data-prompt="كيف أوازن ميزانيتي؟">
-                        ⚖️ كيف أوازن ميزانيتي؟
+                    <button type="button" class="quick-chat-prompt shrink-0 text-[11px] font-bold bg-cream-200/80 hover:bg-cream-300 text-sandDark-900 border border-cream-300 px-3 py-1.5 rounded-full transition cursor-pointer" data-prompt="قارن بين فئات إنفاقي وحدد أين يذهب معظم المال">
+                        ⚖️ مقارنة الفئات
+                    </button>
+                    <button type="button" class="quick-chat-prompt shrink-0 text-[11px] font-bold bg-olive-50 hover:bg-olive-100 text-olive-700 border border-olive-600/20 px-3 py-1.5 rounded-full transition cursor-pointer" data-prompt="ما هي أفضل النصائح العملية لتقليل الهدر في مشتريات المنزل؟">
+                        🌿 نصائح لتقليل الهدر
                     </button>
                 </div>
 
                 <!-- نموذج إرسال سؤال للمستشار -->
                 <form id="ai-chat-form" class="p-3 bg-cream-50 border-t border-cream-200 flex items-center gap-2">
-                    <input type="text" id="ai-chat-input" placeholder="اسألي المستشار الذكي عن مصروفاتك..." autocomplete="off" class="flex-grow bg-white border border-cream-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-caramel-500">
+                    <input type="text" id="ai-chat-input" placeholder="اسألي المستشار الذكي عن مصروفاتك بالتفصيل..." autocomplete="off" class="flex-grow bg-white border border-cream-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-caramel-500">
                     <button type="submit" id="btn-send-chat" class="w-10 h-10 rounded-xl bg-caramel-700 hover:bg-caramel-800 text-white flex items-center justify-center shrink-0 shadow-sm transition cursor-pointer" title="إرسال">
                         <i data-lucide="send" class="w-4 h-4 text-amber-200"></i>
                     </button>
@@ -754,63 +773,61 @@
          */
         const DEFAULT_GEMINI_API_KEY = ""; // <-- الصقي مفتاح AQ. أو AIza هنا لتثبيته في الكود
 
-        // ترتيب النماذج المجانية المدعومة تلقائياً
+        // ترتيب النماذج المجانية المدعومة تلقائياً (الأعلى حصة مجانية أولاً)
         const GEMINI_FREE_MODELS = [
-            "gemini-2.5-flash-lite",
-            "gemini-3-flash-preview",
-            "gemini-2.5-flash"
+            "gemini-3.5-flash-lite",
+            "gemini-3.6-flash",
+            "gemini-3.8-flash",
+            "gemini-3-flash-preview"
         ];
         const getGeminiEndpoint = (model) => `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
-        const STORAGE_KEY = "balad_alafrah_expenses_v1";
-        const CURRENCY_KEY = "balad_alafrah_currency_v1";
-        const API_KEY_STORAGE = "balad_alafrah_gemini_key_v1";
+        const STORAGE_KEY = "balad_alafrah_expenses_v2";
+        const CURRENCY_KEY = "balad_alafrah_currency_v2";
+        const API_KEY_STORAGE = "balad_alafrah_gemini_key_v2";
+        const LAST_QUOTE_IDX_KEY = "balad_alafrah_last_quote_idx";
 
-        // درر من أقوال السلف الصالح في القناعة والبركة وحسن التدبير
+        // 28 قولاً مأثوراً موثوقاً من درر السلف الصالح في القناعة والبركة وحسن التدبير
         const SALAF_QUOTES = [
-            {
-                author: "عبد الله بن مسعود رضي الله عنه",
-                quote: "«ما من يوم إلا وملَكٌ ينادي: يا ابن آدم، قليلٌ يكفيك خيرٌ من كثيرٍ يُطغيك»."
-            },
-            {
-                author: "الحسن البصري رحمه الله",
-                quote: "«من علامة إعراض الله تعالى عن العبد أن يجعل شغله فيما لا يعنيه، والبركة في القصد والتدبير»."
-            },
-            {
-                author: "الإمام الشافعي رحمه الله",
-                quote: "«إذا أردت صلاح قلبك، ونجاح أمرك، وطيب عيشك؛ فاقنع بما قسم الله لك، وأنفق بالمعروف دون إسراف»."
-            },
-            {
-                author: "ابن القيم رحمه الله",
-                quote: "«المال خادمٌ صالح إن وضعته في موضعه، وسيدٌ فاسد إن ملك قلبك؛ فدبّره بعقلٍ وتوكل»."
-            },
-            {
-                author: "الفضيل بن عياض رحمه الله",
-                quote: "«أصل الزهد الرضا عن الله عز وجل، ومن رضي بالقليل بارك الله له فيه وأغناه»."
-            },
-            {
-                author: "عمر بن عبد العزيز رحمه الله",
-                quote: "«أفضل القصد عند الجِدَة، وأفضل العفو عند المقدرة؛ فالتوسط في النفقة نصف المعيشة»."
-            },
-            {
-                author: "سفيان الثوري رحمه الله",
-                quote: "«ليس الزهد بأكل الخشن ولبس العباء، إنما الزهد قِصَر الأمل، وشكر النعمة، وحفظها من التبذير»."
-            },
-            {
-                author: "وهب بن منبه رحمه الله",
-                quote: "«التدبير نصف المعيشة، والتودد نصف العقل، وحسن السؤال نصف العلم»."
-            }
+            { author: "عبد الله بن مسعود رضي الله عنه", quote: "«ما من يوم إلا وملَكٌ ينادي: يا ابن آدم، قليلٌ يكفيك خيرٌ من كثيرٍ يُطغيك»." },
+            { author: "الحسن البصري رحمه الله", quote: "«من علامة إعراض الله تعالى عن العبد أن يجعل شغله فيما لا يعنيه، والبركة في القصد والتدبير»." },
+            { author: "الإمام الشافعي رحمه الله", quote: "«إذا أردت صلاح قلبك، ونجاح أمرك، وطيب عيشك؛ فاقنع بما قسم الله لك، وأنفق بالمعروف دون إسراف»." },
+            { author: "ابن القيم رحمه الله", quote: "«المال خادمٌ صالح إن وضعته في موضعه، وسيدٌ فاسد إن ملك قلبك؛ فدبّره بعقلٍ وتوكل»." },
+            { author: "الفضيل بن عياض رحمه الله", quote: "«أصل الزهد الرضا عن الله عز وجل، ومن رضي بالقليل بارك الله له فيه وأغناه»." },
+            { author: "عمر بن عبد العزيز رحمه الله", quote: "«أفضل القصد عند الجِدَة، وأفضل العفو عند المقدرة؛ فالتوسط في النفقة نصف المعيشة»." },
+            { author: "سفيان الثوري رحمه الله", quote: "«ليس الزهد بأكل الخشن ولبس العباء، إنما الزهد قِصَر الأمل، وشكر النعمة، وحفظها من التبذير»." },
+            { author: "وهب بن منبه رحمه الله", quote: "«التدبير نصف المعيشة، والتودد نصف العقل، وحسن السؤال نصف العلم»." },
+            { author: "عمر بن الخطاب رضي الله عنه", quote: "«الخرق في المعيشة أخوف عندي عليكم من العيلة، لا يقلّ شيءٌ مع الإصلاح، ولا يبقى شيءٌ مع الفساد»." },
+            { author: "علي بن أبي طالب رضي الله عنه", quote: "«قوام الدنيا بأربعة أشياء: عالمٌ يستعمل علمه، وجاهلٌ لا يستنكف أن يتعلم، وغنيٌ لا يبخل بماله، وفقيرٌ لا يبيع آخرته بدنياه»." },
+            { author: "أبو الدرداء رضي الله عنه", quote: "«من فقه الرجل رفقه في معيشته، وتدبيره لنفقته، وحسن تقديره لما بين يديه»." },
+            { author: "عبد الله بن عباس رضي الله عنهما", quote: "«القناعة كنزٌ لا ينفد، ومن رضي بما رزقه الله استراح قلبه وبدنه»." },
+            { author: "سعيد بن المسيب رحمه الله", quote: "«لا خير فيمن لا يريد جمع المال من حلال، يكفّ به وجهه عن الناس، ويصل به رحمه، ويعطي منه حقه»." },
+            { author: "إبراهيم بن أدهم رحمه الله", quote: "«قلة الحرص والطمع تورث الصدق والورع، وكثرة الحرص والطمع تورث الهمّ والجزع»." },
+            { author: "بشر الحافي رحمه الله", quote: "«القناعة مَلِكٌ لا يسكن إلا في قلب مؤمنٍ راضٍ بتدبير الله له»." },
+            { author: "أبو حازم سلمة بن دينار رحمه الله", quote: "«شيئان إذا عملت بهما أصبت بهما خير الدنيا والآخرة: تتحمل ما تكره إذا أحبه الله، وتترك ما تحب إذا كرهه الله»." },
+            { author: "مطرف بن عبد الله رحمه الله", quote: "«لأن أعافى فأشكر أحبّ إليّ من أن أبتلى فأصبر؛ فاشكروا النعم بحفظها وصرفها في طاعة الله»." },
+            { author: "الإمام أحمد بن حنبل رحمه الله", quote: "«الناس إلى العلم أحوج منهم إلى الطعام والشراب؛ لأن الرجل يحتاج إلى الطعام والشراب في اليوم مرة أو مرتين، وحاجته إلى العلم بعدد أنفاسه»." },
+            { author: "ابن تيمية رحمه الله", quote: "«الغنى غنى القلب، والفقر فقر القلب؛ فمن استغنى بالله أغناه الله وبارك له في رزقه»." },
+            { author: "عمر بن عبد العزيز رحمه الله", quote: "«ما قرن شيء إلى شيء أفضل من حلم إلى علم، ومن عفو إلى مقدرة، ومن اقتصاد إلى غنى»." },
+            { author: "لقمان الحكيم رحمه الله", quote: "«يا بني، إن الدنيا بحرٌ عميق وقد غرق فيه ناسٌ كثير، فلتكن سفينتك فيها تقوى الله، وحشوها الإيمان، وشراعها التوكل»." },
+            { author: "سفيان بن عيينة رحمه الله", quote: "«من زيد في عقله نُقص من رزقه؛ ليتدبر القليل فيكفيه كما يكفي الكثير»." },
+            { author: "الحسن البصري رحمه الله", quote: "«يا ابن آدم، إنما أنت أيام، كلما ذهب يوم ذهب بعضك؛ فاجعل مالك زاداً ليوم معادك»." },
+            { author: "عبد الله بن المبارك رحمه الله", quote: "«ربّ عملٍ صغير تعظمه النية، وربّ عملٍ كبير تصغره النية؛ فانْوِ بنفقتك على أهلك الأجر»." },
+            { author: "الأوزاعي رحمه الله", quote: "«عليك بآثار من سلف وإن رفضك الناس، وإياك وآراء الرجال وإن زخرفوه لك بالقول»." },
+            { author: "ميمون بن مهران رحمه الله", quote: "«التاجر الصدوق الأمين مع النبيين والصديقين والشهداء، والبركة في الصدق والأمانة»." },
+            { author: "مالك بن دينار رحمه الله", quote: "«رحم الله عبداً قال لنفسه: ألستِ صاحبة كذا؟ ألستِ صاحبة كذا؟ ثم ذمّها، ثم خطمها، ثم ألزمها كتاب الله فكان لها قائداً»." },
+            { author: "الشافعي رحمه الله", quote: "«العاقل من عقله عقله عن كل مذموم، وأرشده إلى الاقتصاد في كل شأنه»." }
         ];
 
         // الفئات الـ 8 المعتمدة بألوان دافئة متناسقة
         const CATEGORIES = [
-            { id: "مواد غذائية", label: "مواد غذائية", color: "#9C6327", bg: "bg-amber-50 text-amber-900 border-amber-300" },
-            { id: "لحوم ودواجن", label: "لحوم ودواجن", color: "#B91C1C", bg: "bg-red-50 text-red-800 border-red-200" },
-            { id: "خضار وفواكه", label: "خضار وفواكه", color: "#15803D", bg: "bg-emerald-50 text-emerald-800 border-emerald-200" },
-            { id: "منظفات وعناية", label: "منظفات وعناية", color: "#0369A1", bg: "bg-sky-50 text-sky-800 border-sky-200" },
-            { id: "مشروبات وحلويات", label: "مشروبات وحلويات", color: "#D97706", bg: "bg-orange-50 text-orange-800 border-orange-200" },
-            { id: "مطاعم وكافيهات", label: "مطاعم وكافيهات", color: "#B45309", bg: "bg-yellow-50 text-yellow-900 border-yellow-300" },
-            { id: "فواتير وخدمات", label: "فواتير وخدمات", color: "#6D28D9", bg: "bg-violet-50 text-violet-800 border-violet-200" },
+            { id: "مواد غذائية", label: "مواد غذائية", color: "#8C5A32", bg: "bg-amber-50 text-amber-900 border-amber-300" },
+            { id: "خضار وفواكه", label: "خضار وفواكه", color: "#4A6B53", bg: "bg-olive-50 text-olive-700 border-olive-600/30" },
+            { id: "لحوم ودواجن", label: "لحوم ودواجن", color: "#A94438", bg: "bg-red-50 text-red-800 border-red-200" },
+            { id: "منظفات وعناية", label: "منظفات وعناية", color: "#3B6E8C", bg: "bg-sky-50 text-sky-800 border-sky-200" },
+            { id: "مطاعم ومقاهي", label: "مطاعم ومقاهي", color: "#C6923A", bg: "bg-yellow-50 text-yellow-900 border-yellow-300" },
+            { id: "فواتير وخدمات", label: "فواتير وخدمات", color: "#6D4C7D", bg: "bg-purple-50 text-purple-800 border-purple-200" },
+            { id: "صحة وصيدلية", label: "صحة وصيدلية", color: "#2E7D6B", bg: "bg-teal-50 text-teal-800 border-teal-200" },
             { id: "أخرى", label: "أخرى", color: "#5C4D3C", bg: "bg-cream-200 text-sandDark-800 border-cream-300" }
         ];
 
@@ -846,17 +863,21 @@
 
         /**
          * ============================================================================
-         * 2. نظام أقوال السلف الصالح (إشعار ترحيبي + بطاقة قابلة للتحديث)
+         * 2. نظام أقوال السلف الصالح (إشعار ترحيبي متجدد + بطاقة ونسخ)
          * ============================================================================
          */
         function showRandomSalafQuote(showToastAlert = true) {
+            const storedLast = parseInt(safeStorageGet(LAST_QUOTE_IDX_KEY), 10);
+            const avoidIdx = currentQuoteIndex !== -1 ? currentQuoteIndex : (!isNaN(storedLast) ? storedLast : -1);
+
             let nextIndex = Math.floor(Math.random() * SALAF_QUOTES.length);
-            if (SALAF_QUOTES.length > 1 && nextIndex === currentQuoteIndex) {
+            if (SALAF_QUOTES.length > 1 && nextIndex === avoidIdx) {
                 nextIndex = (nextIndex + 1) % SALAF_QUOTES.length;
             }
             currentQuoteIndex = nextIndex;
-            const item = SALAF_QUOTES[currentQuoteIndex];
+            safeStorageSet(LAST_QUOTE_IDX_KEY, String(currentQuoteIndex));
 
+            const item = SALAF_QUOTES[currentQuoteIndex];
             const authorEl = document.getElementById("salaf-author-badge");
             const textEl = document.getElementById("salaf-quote-text");
             if (authorEl) authorEl.textContent = item.author;
@@ -870,7 +891,7 @@
         function showSalafToastNotification(item) {
             const container = document.getElementById("toast-container");
             const toast = document.createElement("div");
-            toast.className = "animate-toast bg-gradient-to-l from-sandDark-900 to-caramel-900 text-cream-50 border border-amber-300/40 p-4 rounded-2xl shadow-2xl pointer-events-auto space-y-1.5";
+            toast.className = "animate-toast bg-gradient-to-l from-sandDark-900 to-caramel-800 text-cream-50 border border-amber-300/40 p-4 rounded-2xl shadow-2xl pointer-events-auto space-y-1.5";
             toast.innerHTML = `
                 <div class="flex items-center justify-between gap-2">
                     <span class="text-[11px] font-extrabold text-amber-300 flex items-center gap-1.5">
@@ -890,7 +911,23 @@
                 toast.style.opacity = "0";
                 toast.style.transition = "opacity 0.4s ease";
                 setTimeout(() => toast.remove(), 400);
-            }, 6500);
+            }, 7000);
+        }
+
+        function copyCurrentSalafQuote() {
+            const item = SALAF_QUOTES[currentQuoteIndex] || SALAF_QUOTES[0];
+            const fullText = `${item.quote} — ${item.author} (تطبيق بلد الأفراح)`;
+            const tempInput = document.createElement("textarea");
+            tempInput.value = fullText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand("copy");
+                showToast("تم نسخ القول المأثور إلى الحافظة!", "success");
+            } catch (e) {
+                showToast("تعذر نسخ النص تلقائياً.", "error");
+            }
+            document.body.removeChild(tempInput);
         }
 
         /**
@@ -945,9 +982,9 @@
             if (currentApiKey) {
                 const masked = maskApiKey(currentApiKey);
                 badge.textContent = `مفعّل ومحفوظ (${masked}) ✓`;
-                badge.className = "text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200";
-                iconBox.className = "w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-200";
-                desc.innerHTML = `المفتاح محفوظ وجاهز (<code dir="ltr" class="bg-emerald-50 text-emerald-800 px-1.5 py-0.5 rounded font-mono font-bold">${escapeHtml(masked)}</code>). يعمل مجاناً مع تحليل الفواتير والمستشار الذكي.`;
+                badge.className = "text-xs font-bold px-2.5 py-0.5 rounded-full bg-olive-100 text-olive-700 border border-olive-600/30";
+                iconBox.className = "w-12 h-12 rounded-2xl bg-olive-50 text-olive-700 flex items-center justify-center shrink-0 border border-olive-600/20";
+                desc.innerHTML = `المفتاح محفوظ وجاهز (<code dir="ltr" class="bg-olive-50 text-olive-700 px-1.5 py-0.5 rounded font-mono font-bold">${escapeHtml(masked)}</code>). يعمل مجاناً مع تحليل الفواتير والمستشار الذكي.`;
                 if (input && input.value.trim() !== currentApiKey) {
                     input.value = currentApiKey;
                 }
@@ -976,7 +1013,7 @@
             initManualBatchForm();
             setupEventListeners();
             renderAll();
-            // إظهار قول مأثور من أقوال السلف الصالح عند كل دخول
+            // إظهار قول مأثور متجدد من أقوال السلف الصالح عند كل دخول
             showRandomSalafQuote(true);
         });
 
@@ -1053,7 +1090,7 @@
                             const errData = await response.json().catch(() => ({}));
                             const rawMsg = errData?.error?.message || `HTTP ${response.status}`;
 
-                            // التبديل التلقائي للنموذج التالي في القائمة عند عدم توفر النموذج
+                            // التبديل التلقائي للنموذج التالي عند عدم توفر النموذج
                             if (response.status === 404 || rawMsg.includes("no longer available") || rawMsg.includes("not found") || rawMsg.includes("not supported")) {
                                 lastError = new Error(`النموذج ${modelName}: ${rawMsg}`);
                                 break;
@@ -1103,7 +1140,7 @@
             try {
                 await callGeminiAPI({
                     contents: [{ role: "user", parts: [{ text: "أجب بكلمة واحدة: جاهز" }] }],
-                    generationConfig: { maxOutputTokens: 10 }
+                    generationConfig: { maxOutputTokens: 20 }
                 }, 0);
                 showToast("ممتاز! المفتاح متصل بنجاح بنماذج Gemini المجانية ✓", "success");
             } catch (error) {
@@ -1152,6 +1189,7 @@
                     ]
                 }],
                 generationConfig: {
+                    maxOutputTokens: 8192,
                     responseMimeType: "application/json",
                     responseSchema: {
                         type: "OBJECT",
@@ -1202,7 +1240,7 @@
 
         /**
          * ============================================================================
-         * 6. المستشار المالي الذكي (محادثة AI + محلل ذكي محلي بدون إنترنت/مفتاح)
+         * 6. المستشار المالي الذكي (ردود كاملة وطويلة 8192 توكن + زر أكمل الرد)
          * ============================================================================
          */
         function buildFinancialContextSummary() {
@@ -1211,6 +1249,8 @@
             }
 
             const total = expenses.reduce((s, e) => s + (Number(e.totalPrice) || 0), 0);
+            const uniqueReceipts = new Set(expenses.map(e => e.receiptId)).size;
+            const avgReceipt = uniqueReceipts > 0 ? total / uniqueReceipts : 0;
             const catTotals = {};
             const storeTotals = {};
 
@@ -1228,18 +1268,19 @@
 
             const storesText = Object.entries(storeTotals)
                 .sort((a, b) => b[1] - a[1])
-                .slice(0, 6)
+                .slice(0, 8)
                 .map(([s, v]) => `- ${s}: ${v.toFixed(2)} ${currentCurrency}`)
                 .join("\n");
 
-            const recentItems = expenses.slice(0, 20)
-                .map(e => `• ${e.name} (${e.category}) - ${e.totalPrice} ${currentCurrency} في ${e.store} بتاريخ ${e.date}`)
+            const recentItems = expenses.slice(0, 30)
+                .map(e => `• ${e.name} (${e.category}) - الكمية: ${e.quantity} - السعر: ${e.totalPrice} ${currentCurrency} في ${e.store} بتاريخ ${e.date}`)
                 .join("\n");
 
             return `
 بيانات مصروفات المستخدم الحالية في تطبيق (بلد الأفراح):
 - العملة: ${currentCurrency}
 - إجمالي المصروفات الكلي: ${total.toFixed(2)} ${currentCurrency}
+- عدد الفواتير: ${uniqueReceipts} | متوسط الفاتورة: ${avgReceipt.toFixed(2)} ${currentCurrency}
 - عدد الأصناف المسجلة: ${expenses.length}
 
 توزيع المصروفات حسب الفئات:
@@ -1248,7 +1289,7 @@ ${catsText}
 أعلى المتاجر/الجهات إنفاقاً:
 ${storesText}
 
-أحدث الأصناف المشتراة:
+تفاصيل الأصناف المسجلة (أحدث 30 صنفاً):
 ${recentItems}
 `;
         }
@@ -1256,10 +1297,11 @@ ${recentItems}
         // محلل محلي ذكي يعمل فوراً إذا لم يتم إدخال مفتاح API أو تعذر الاتصال
         function generateOfflineAdvisorReply(question) {
             if (expenses.length === 0) {
-                return "سجل مصروفاتكِ فارغ حالياً! ابدئي برفع صورة فاتورة أو إضافة مصروف يدوياً (أو اضغطي على **بيانات تجريبية** في الأعلى) وسأحلل أرقامكِ فوراً.";
+                return "سجل مصروفاتكِ فارغ حالياً! ابدئي برفع صورة فاتورة أو إضافة مصروف يدوياً (أو اضغطي على **بيانات تجريبية** في الأعلى) وسأحلل أرقامكِ فوراً بالتفصيل.";
             }
 
             const total = expenses.reduce((s, e) => s + (Number(e.totalPrice) || 0), 0);
+            const uniqueReceipts = new Set(expenses.map(e => e.receiptId)).size;
             const catTotals = {};
             const storeTotals = {};
             expenses.forEach(e => {
@@ -1278,28 +1320,33 @@ ${recentItems}
 
             const q = question.toLowerCase();
 
-            if (q.includes("فئة") || q.includes("استهلاك") || q.includes("فين")) {
-                const top3 = sortedCats.slice(0, 3)
-                    .map(([c, v], idx) => `${idx + 1}. **${c}**: ${v.toFixed(2)} ${currentCurrency} (${((v / total) * 100).toFixed(1)}%)`)
+            if (q.includes("فئة") || q.includes("مقارنة") || q.includes("استهلاك")) {
+                const catsBreakdown = sortedCats
+                    .map(([c, v], idx) => `${idx + 1}. **${c}**: ${v.toFixed(2)} ${currentCurrency} (بنسبة ${((v / total) * 100).toFixed(1)}%)`)
                     .join("\n");
-                return `بناءً على تحليلي المحلي لسجلكِ (إجمالي **${total.toFixed(2)} ${currentCurrency}**):\n\nأعلى الفئات استهلاكاً لديكِ هي:\n${top3}\n\nوأكثر متجر أنفقتِ فيه هو **${topStore[0]}** بقيمة **${topStore[1].toFixed(2)} ${currentCurrency}**.`;
+                return `### مقارنة شاملة لفئات الإنفاق في بلد الأفراح:\n\nإجمالي مصروفاتكِ المسجلة هو **${total.toFixed(2)} ${currentCurrency}** موزعة على **${uniqueReceipts}** فواتير:\n\n${catsBreakdown}\n\n• **الملاحظة الأهم:** تستحوذ فئة **${topCat[0]}** على النصيب الأكبر بقيمة **${topCat[1].toFixed(2)} ${currentCurrency}**، ويأتي متجر **${topStore[0]}** في صدارة أماكن الشراء بقيمة **${topStore[1].toFixed(2)} ${currentCurrency}**.`;
             }
 
-            if (q.includes("توفير") || q.includes("خطة") || q.includes("وازن") || q.includes("ميزاني")) {
-                return `إليكِ خطة توازن وتوفير سريعة مبنية على مصروفاتكِ الحالية (**${total.toFixed(2)} ${currentCurrency}**):\n\n• **التركيز على الفئة الأعلى (${topCat[0]}):** تمثل **${topCatPct}%** من إنفاقكِ؛ تقليصها بنسبة 20% فقط سيوفر لكِ **${(topCat[1] * 0.2).toFixed(2)} ${currentCurrency}**.\n• **هدف التوفير الشهري المقترح (15%):** **${savingTarget} ${currentCurrency}**.\n• **نصيحة عملية:** قارني أسعار الأصناف المتكررة في **${topStore[0]}** واكتبي قائمة المشتريات مسبقاً لتجنب الشراء العشوائي.`;
+            if (q.includes("توفير") || q.includes("خطة") || q.includes("هدر") || q.includes("ميزاني")) {
+                return `### خطة التوفير وتقليل الهدر المقترحة لميزانيتكِ:\n\nبناءً على إجمالي مصروفاتكِ (**${total.toFixed(2)} ${currentCurrency}**):\n\n1. **التركيز على الفئة الأعلى (${topCat[0]}):** تمثل **${topCatPct}%** من مصروفاتكِ؛ تقليصها بنسبة 20% فقط عبر الشراء بالكميات الاقتصادية وكتابة قائمة مسبقة سيوفر لكِ **${(topCat[1] * 0.2).toFixed(2)} ${currentCurrency}**.\n2. **هدف الادخار الذكي (15%):** استقطعي **${savingTarget} ${currentCurrency}** فور توفر الدخل قبل البدء في المشتريات الكمالية.\n3. **مراجعة متجر (${topStore[0]}):** قارني أسعار الأصناف المتكررة هناك مع العروض الأسبوعية وتجنبي الشراء العشوائي خارج القائمة.\n4. **قاعدة الـ 24 ساعة:** لأي مشتريات غير أساسية، انتظري 24 ساعة قبل قرار الشراء لتقليل الهدر بنسبة تصل إلى 30%.`;
             }
 
-            return `ملخصكِ المالي السريع من **بلد الأفراح**:\n• **إجمالي المصروفات:** ${total.toFixed(2)} ${currentCurrency} (${expenses.length} صنف)\n• **أعلى فئة:** ${topCat[0]} (${topCat[1].toFixed(2)} ${currentCurrency} - ${topCatPct}%)\n• **أعلى متجر:** ${topStore[0]} (${topStore[1].toFixed(2)} ${currentCurrency})\n\n*(ملاحظة: أضيفي مفتاح Gemini API في الأعلى للحصول على نقاش مالي أعمق بالذكاء الاصطناعي التوليدي).*`;
+            const top3 = sortedCats.slice(0, 3)
+                .map(([c, v], idx) => `${idx + 1}. **${c}**: ${v.toFixed(2)} ${currentCurrency} (${((v / total) * 100).toFixed(1)}%)`)
+                .join("\n");
+
+            return `### التحليل المالي الشامل لسجلكِ في بلد الأفراح:\n\n• **إجمالي المصروفات:** ${total.toFixed(2)} ${currentCurrency} (${expenses.length} صنف في ${uniqueReceipts} فواتير)\n• **أعلى 3 فئات إنفاقاً:**\n${top3}\n• **أكثر متجر إنفاقاً:** ${topStore[0]} بإجمالي **${topStore[1].toFixed(2)} ${currentCurrency}**\n• **التوصية السريعة:** بتنظيم مشتريات **${topCat[0]}** يمكنكِ توفير نحو **${savingTarget} ${currentCurrency}** شهرياً.\n\n*(أضيفي مفتاح Gemini API المجاني في الأعلى للحصول على حوار تفاعلي أوسع وتحليل عميق لكل صنف على حدة).*`;
         }
 
-        async function handleSendChatMessage(userText) {
+        async function handleSendChatMessage(userText, isContinuation = false) {
             const trimmed = userText.trim();
             if (!trimmed) return;
 
-            appendChatBubble("user", trimmed);
-            document.getElementById("ai-chat-input").value = "";
+            if (!isContinuation) {
+                appendChatBubble("user", trimmed);
+                document.getElementById("ai-chat-input").value = "";
+            }
 
-            // إذا لم يُدخل المستخدم مفتاح API، نستخدم المحلل الذكي المحلي فوراً دون خطأ
             const inputVal = (document.getElementById("api-key-input")?.value || "").trim();
             if (inputVal && inputVal !== currentApiKey) {
                 handleSaveApiKey(true);
@@ -1307,7 +1354,7 @@ ${recentItems}
 
             if (!currentApiKey) {
                 const offlineReply = generateOfflineAdvisorReply(trimmed);
-                appendChatBubble("ai", offlineReply);
+                appendChatBubble("ai", offlineReply, false);
                 return;
             }
 
@@ -1318,15 +1365,17 @@ ${recentItems}
             sendBtn.disabled = true;
 
             const systemContext = `
-أنت المستشار المالي الذكي المدمج داخل تطبيق (بلد الأفراح).
-تحدث باللغة العربية بأسلوب ودود وعملي ومختصر ومنظم (استخدم نقاطاً واضحة وأرقاماً دقيقة).
-لديك اطلاع كامل على بيانات مصروفات المستخدم أدناه. استخدمها للإجابة بدقة على أسئلته وتقديم نصائح توفير ذكية ومخصصة لأصنافه الفعلية.
+أنت المستشار المالي الذكي المدمج داخل تطبيق (بلد الأفراح) لإدارة مصروفات الأسرة والفرد.
+قواعد الإجابة الإلزامية:
+1. تحدث باللغة العربية الفصحى الميسّرة والودودة، وقدّم إجابات **كاملة، شاملة، ومفصلة** دون بتر أو اختصار مخلّ، وأكمل جميع الجمل والنقاط حتى النهاية.
+2. نظّم إجابتك بعناوين واضحة ونقاط مرقمة وأرقام دقيقة مستخرجة من بيانات المستخدم الفعلية أدناه.
+3. إذا طلب المستخدم إكمال الرد السابق أو التوسع فيه، فتابع مباشرة من حيث انتهيت أو أضف تفاصيل وحلولاً عملية أعمق دون تكرار المقدمة.
 
 ${buildFinancialContextSummary()}
 `;
 
             chatHistory.push({ role: "user", parts: [{ text: trimmed }] });
-            const recentHistory = chatHistory.slice(-8);
+            const recentHistory = chatHistory.slice(-10);
 
             const payload = {
                 systemInstruction: {
@@ -1334,51 +1383,73 @@ ${buildFinancialContextSummary()}
                 },
                 contents: recentHistory,
                 generationConfig: {
-                    temperature: 0.6,
-                    maxOutputTokens: 700
+                    temperature: 0.65,
+                    maxOutputTokens: 8192
                 }
             };
 
             try {
                 const res = await callGeminiAPI(payload, 1);
                 removeTypingIndicator(typingId);
-                const reply = res?.candidates?.[0]?.content?.parts?.[0]?.text || "عذراً، لم أتمكن من صياغة رد حالياً.";
+                const candidate = res?.candidates?.[0];
+                const reply = candidate?.content?.parts?.[0]?.text || "عذراً، لم أتمكن من صياغة رد حالياً.";
+                const wasTruncated = candidate?.finishReason === "MAX_TOKENS";
                 chatHistory.push({ role: "model", parts: [{ text: reply }] });
-                appendChatBubble("ai", reply);
+                appendChatBubble("ai", reply, true, wasTruncated);
             } catch (err) {
                 removeTypingIndicator(typingId);
                 chatHistory.pop();
-                // عرض التحليل المحلي مع تنبيه مختصر لسبب تعذر الاتصال السحابي
                 const fallbackReply = generateOfflineAdvisorReply(trimmed);
-                appendChatBubble("ai", `${fallbackReply}\n\n⚠️ *(تعذر الاتصال السحابي: ${err.message})*`);
+                appendChatBubble("ai", `${fallbackReply}\n\n⚠️ *(تعذر الاتصال السحابي: ${err.message})*`, false);
             } finally {
                 sendBtn.disabled = false;
             }
         }
 
-        function appendChatBubble(sender, text) {
+        function formatMarkdownToHtml(text) {
+            return escapeHtml(text)
+                .replace(/^###\s+(.*)$/gm, '<h4 class="font-heading font-extrabold text-caramel-800 text-sm sm:text-base mt-2 mb-1">$1</h4>')
+                .replace(/^##\s+(.*)$/gm, '<h3 class="font-heading font-extrabold text-sandDark-900 text-base mt-2 mb-1">$1</h3>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="text-caramel-800 font-extrabold">$1</strong>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function appendChatBubble(sender, text, showExpandBtn = false, wasTruncated = false) {
             const container = document.getElementById("ai-chat-messages");
             const wrapper = document.createElement("div");
 
             if (sender === "user") {
                 wrapper.className = "flex items-start justify-end gap-2";
                 wrapper.innerHTML = `
-                    <div class="bg-caramel-700 text-white rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-xs sm:text-sm leading-relaxed shadow-2xs max-w-[85%]">
+                    <div class="bg-caramel-700 text-white rounded-2xl rounded-tl-sm px-4 py-3 text-xs sm:text-sm leading-relaxed shadow-2xs max-w-[85%]">
                         ${escapeHtml(text)}
                     </div>
                 `;
             } else {
-                const formatted = escapeHtml(text)
-                    .replace(/\*\*(.*?)\*\*/g, '<strong class="text-caramel-800 font-extrabold">$1</strong>')
-                    .replace(/\n/g, '<br>');
+                const formatted = formatMarkdownToHtml(text);
+                const expandPrompt = wasTruncated
+                    ? "أكمل الرد السابق من آخر جملة توقفت عندها دون إعادة المقدمة"
+                    : "توسّع أكثر في النقاط السابقة وأعطني أمثلة وحلولاً عملية إضافية";
+                const expandLabel = wasTruncated
+                    ? "أكمل الرد من حيث توقف"
+                    : "أكمل الرد / توسّع أكثر";
 
                 wrapper.className = "flex items-start gap-2.5";
                 wrapper.innerHTML = `
                     <div class="w-8 h-8 rounded-xl bg-caramel-700 text-amber-200 flex items-center justify-center shrink-0 mt-0.5">
                         <i data-lucide="bot" class="w-4 h-4"></i>
                     </div>
-                    <div class="bg-white border border-cream-300 rounded-2xl rounded-tr-sm p-3.5 text-xs sm:text-sm text-sandDark-800 leading-relaxed shadow-2xs max-w-[88%]">
-                        ${formatted}
+                    <div class="bg-white border border-cream-300 rounded-2xl rounded-tr-sm p-4 text-xs sm:text-sm text-sandDark-800 leading-relaxed shadow-2xs max-w-[90%] space-y-2.5">
+                        <div>${formatted}</div>
+                        ${showExpandBtn ? `
+                            <div class="pt-2 border-t border-cream-200 flex items-center justify-between gap-2">
+                                <span class="text-[10px] text-sandDark-700/70">${wasTruncated ? "تم بلوغ الحد الأقصى، انقري للإكمال" : "هل تودين تفاصيل أعمق؟"}</span>
+                                <button type="button" class="btn-continue-ai-reply inline-flex items-center gap-1 text-[11px] font-extrabold text-caramel-800 bg-cream-200 hover:bg-cream-300 border border-cream-300 px-2.5 py-1 rounded-xl transition cursor-pointer" data-continue-prompt="${escapeHtml(expandPrompt)}">
+                                    <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-caramel-700"></i>
+                                    <span>${expandLabel}</span>
+                                </button>
+                            </div>
+                        ` : ""}
                     </div>
                 `;
             }
@@ -1386,6 +1457,15 @@ ${buildFinancialContextSummary()}
             container.appendChild(wrapper);
             container.scrollTop = container.scrollHeight;
             if (window.lucide) lucide.createIcons();
+
+            const continueBtn = wrapper.querySelector(".btn-continue-ai-reply");
+            if (continueBtn) {
+                continueBtn.addEventListener("click", () => {
+                    continueBtn.disabled = true;
+                    continueBtn.classList.add("opacity-50");
+                    handleSendChatMessage(continueBtn.dataset.continuePrompt, false);
+                });
+            }
         }
 
         function appendTypingIndicator(id) {
@@ -1397,10 +1477,11 @@ ${buildFinancialContextSummary()}
                 <div class="w-8 h-8 rounded-xl bg-caramel-700 text-amber-200 flex items-center justify-center shrink-0">
                     <i data-lucide="bot" class="w-4 h-4"></i>
                 </div>
-                <div class="bg-white border border-cream-300 rounded-2xl px-4 py-3 text-xs text-sandDark-700 flex items-center gap-1.5">
+                <div class="bg-white border border-cream-300 rounded-2xl px-4 py-3 text-xs text-sandDark-700 flex items-center gap-2">
                     <span class="w-2 h-2 bg-caramel-600 rounded-full animate-bounce"></span>
                     <span class="w-2 h-2 bg-caramel-600 rounded-full animate-bounce" style="animation-delay: 0.15s"></span>
                     <span class="w-2 h-2 bg-caramel-600 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+                    <span class="text-[11px] font-bold text-caramel-800 mr-1">المستشار يكتب تحليلاً مفصلاً...</span>
                 </div>
             `;
             container.appendChild(div);
@@ -1724,6 +1805,7 @@ ${buildFinancialContextSummary()}
             const totalAmount = expenses.reduce((s, i) => s + (Number(i.totalPrice) || 0), 0);
             const uniqueReceipts = new Set(expenses.map(i => i.receiptId)).size;
             const totalItems = expenses.length;
+            const avgReceipt = uniqueReceipts > 0 ? totalAmount / uniqueReceipts : 0;
 
             const catTotals = {};
             const storeTotals = {};
@@ -1751,8 +1833,8 @@ ${buildFinancialContextSummary()}
             document.getElementById("kpi-items-count").textContent = totalItems;
             document.getElementById("kpi-top-category").textContent = topCat;
             document.getElementById("kpi-top-category-amount").textContent = topCatAmt.toFixed(2);
+            document.getElementById("kpi-avg-receipt").textContent = avgReceipt.toFixed(2);
             document.getElementById("kpi-top-store").textContent = topStore;
-            document.getElementById("kpi-top-store-amount").textContent = topStoreAmt.toFixed(2);
         }
 
         function renderCharts() {
@@ -1800,7 +1882,7 @@ ${buildFinancialContextSummary()}
                         data: sortedCats.map(c => c.amount),
                         backgroundColor: sortedCats.map(c => c.color),
                         borderWidth: 2,
-                        borderColor: "#FDFBF7",
+                        borderColor: "#FFFDF9",
                         hoverOffset: 6
                     }]
                 },
@@ -1855,7 +1937,7 @@ ${buildFinancialContextSummary()}
                     datasets: [{
                         label: `المبلغ (${currentCurrency})`,
                         data: topStores.map(s => s[1]),
-                        backgroundColor: ["#7E4D1B", "#9C6327", "#B87D3B", "#D97706", "#15803D", "#5C4D3C"],
+                        backgroundColor: ["#6B4226", "#8C5A32", "#A8713E", "#C6923A", "#4A6B53", "#5C4D3C"],
                         borderRadius: 10,
                         barThickness: 28
                     }]
@@ -1882,7 +1964,7 @@ ${buildFinancialContextSummary()}
                         y: {
                             beginAtZero: true,
                             ticks: { font: { family: "Tajawal", size: 11 }, color: "#5C4D3C" },
-                            grid: { color: "#F3E9D8" }
+                            grid: { color: "#F3ECE0" }
                         }
                     }
                 }
@@ -2120,8 +2202,8 @@ ${buildFinancialContextSummary()}
                 { id: "D-2", receiptId: "REC-301", name: "صدور دجاج طازجة 1 كجم", category: "لحوم ودواجن", store: "سوبر ماركت البركة", date: today, quantity: 1, totalPrice: 28.00 },
                 { id: "D-3", receiptId: "REC-301", name: "طماطم بلدي + تفاح أحمر", category: "خضار وفواكه", store: "سوبر ماركت البركة", date: today, quantity: 2, totalPrice: 23.50 },
                 { id: "D-4", receiptId: "REC-301", name: "مسحوق غسيل ملابس 3 كجم", category: "منظفات وعناية", store: "سوبر ماركت البركة", date: today, quantity: 1, totalPrice: 34.00 },
-                { id: "D-5", receiptId: "REC-302", name: "قهوة عربية محمصة + شوكولاتة", category: "مشروبات وحلويات", store: "محمصة الدار", date: yesterday, quantity: 1, totalPrice: 40.50 },
-                { id: "D-6", receiptId: "REC-303", name: "عشاء عائلي مشويات", category: "مطاعم وكافيهات", store: "مطعم الأصالة", date: yesterday, quantity: 1, totalPrice: 115.00 },
+                { id: "D-5", receiptId: "REC-302", name: "فيتامينات ومسكن ألم", category: "صحة وصيدلية", store: "صيدلية الدواء", date: yesterday, quantity: 2, totalPrice: 54.00 },
+                { id: "D-6", receiptId: "REC-303", name: "عشاء عائلي مشويات", category: "مطاعم ومقاهي", store: "مطعم الأصالة", date: yesterday, quantity: 1, totalPrice: 115.00 },
                 { id: "D-7", receiptId: "REC-304", name: "فاتورة الكهرباء والإنترنت", category: "فواتير وخدمات", store: "الخدمات العامة", date: yesterday, quantity: 1, totalPrice: 185.00 }
             ];
 
@@ -2137,10 +2219,11 @@ ${buildFinancialContextSummary()}
          * ============================================================================
          */
         function setupEventListeners() {
-            // زر قول آخر من أقوال السلف الصالح
+            // أزرار أقوال السلف الصالح
             document.getElementById("btn-next-salaf-quote").addEventListener("click", () => {
                 showRandomSalafQuote(true);
             });
+            document.getElementById("btn-copy-salaf-quote").addEventListener("click", copyCurrentSalafQuote);
 
             // حفظ المفتاح تلقائياً عند الكتابة/اللصق وأيضاً عند الضغط على الزر أو Enter
             const saveKeyBtn = document.getElementById("btn-save-api-key");
@@ -2212,12 +2295,12 @@ ${buildFinancialContextSummary()}
             document.getElementById("ai-chat-form").addEventListener("submit", (e) => {
                 e.preventDefault();
                 const val = document.getElementById("ai-chat-input").value;
-                handleSendChatMessage(val);
+                handleSendChatMessage(val, false);
             });
 
             document.querySelectorAll(".quick-chat-prompt").forEach(btn => {
                 btn.addEventListener("click", () => {
-                    handleSendChatMessage(btn.dataset.prompt);
+                    handleSendChatMessage(btn.dataset.prompt, false);
                 });
             });
 
@@ -2229,8 +2312,8 @@ ${buildFinancialContextSummary()}
                         <div class="w-8 h-8 rounded-xl bg-caramel-700 text-amber-200 flex items-center justify-center shrink-0 mt-0.5">
                             <i data-lucide="sparkles" class="w-4 h-4"></i>
                         </div>
-                        <div class="bg-white border border-cream-300 rounded-2xl rounded-tr-sm p-3.5 text-xs sm:text-sm text-sandDark-800 leading-relaxed shadow-2xs max-w-[88%]">
-                            تم بدء محادثة جديدة في <strong>بلد الأفراح</strong>. اسأليني عن مصروفاتكِ أو اطلبي خطة توفير!
+                        <div class="bg-white border border-cream-300 rounded-2xl rounded-tr-sm p-3.5 text-xs sm:text-sm text-sandDark-800 leading-relaxed shadow-2xs max-w-[90%]">
+                            تم بدء محادثة جديدة في <strong>بلد الأفراح</strong>. اسأليني عن مصروفاتكِ بالتفصيل وسأجيبكِ بردّ كامل!
                         </div>
                     </div>
                 `;
@@ -2340,9 +2423,9 @@ ${buildFinancialContextSummary()}
             const container = document.getElementById("toast-container");
             const toast = document.createElement("div");
             const styles = {
-                success: "bg-caramel-800 text-cream-50 border border-amber-300/40",
+                success: "bg-olive-700 text-cream-50 border border-amber-300/40",
                 error: "bg-rose-700 text-white border border-rose-500",
-                info: "bg-sandDark-900 text-cream-50 border border-caramel-600/50"
+                info: "bg-sandDark-900 text-cream-50 border border-caramel-500/50"
             };
             toast.className = `animate-toast ${styles[type] || styles.info} px-4 py-3 rounded-2xl shadow-xl text-xs sm:text-sm font-bold flex items-center justify-between gap-3 pointer-events-auto`;
             toast.innerHTML = `<span>${escapeHtml(message)}</span>`;
